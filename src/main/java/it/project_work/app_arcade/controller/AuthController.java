@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import it.project_work.app_arcade.models.User;
-import it.project_work.app_arcade.repository.UserRepository;
+import it.project_work.app_arcade.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 

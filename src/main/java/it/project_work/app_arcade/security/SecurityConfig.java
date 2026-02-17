@@ -27,6 +27,7 @@ public class SecurityConfig {
                                 "/auth/register",
                                 "/css/**",
                                 "/js/**",
+                                "/partials/**",
                                 "/images/**")
                         .permitAll()
                         .requestMatchers("/flappy/**").permitAll()

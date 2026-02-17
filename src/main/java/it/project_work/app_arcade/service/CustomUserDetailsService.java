@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import it.project_work.app_arcade.models.User;
-import it.project_work.app_arcade.repository.UserRepository;
+import it.project_work.app_arcade.repositories.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

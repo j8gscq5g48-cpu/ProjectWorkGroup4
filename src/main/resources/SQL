@@ -1,0 +1,91 @@
+-- =========================================================
+-- ArcadeHub DB (MVP) - MySQL 8+
+-- Tabelle: avatars, users, user_game_progress
+-- =========================================================
+
+CREATE DATABASE IF NOT EXISTS arcadehub
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_0900_ai_ci;
+
+USE arcadehub;
+
+-- (Opzionale) pulizia in dev
+DROP TABLE IF EXISTS user_game_progress;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS avatars;
+
+-- =========================================================
+-- 1) avatars
+-- =========================================================
+CREATE TABLE avatars (
+  id             BIGINT NOT NULL AUTO_INCREMENT,
+  name           VARCHAR(80)  NOT NULL,
+  image_url      VARCHAR(255) NOT NULL,
+  required_level INT          NOT NULL DEFAULT 1,
+  active         TINYINT(1)   NOT NULL DEFAULT 1,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_avatars_name (name),
+  KEY idx_avatars_active_level (active, required_level)
+) ENGINE=InnoDB;
+-- =========================================================
+-- 2) users
+-- =========================================================
+CREATE TABLE users (
+  id                 BIGINT NOT NULL AUTO_INCREMENT,
+  username           VARCHAR(50)  NOT NULL,
+  email              VARCHAR(255) NOT NULL,
+  password_hash      VARCHAR(255) NOT NULL,
+  role               ENUM('USER','ADMIN') NOT NULL,
+  enabled            TINYINT(1)   NOT NULL DEFAULT 1,
+  level              INT          NOT NULL DEFAULT 1,
+  selected_avatar_id BIGINT NULL,
+  created_at         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_users_username (username),
+  UNIQUE KEY uk_users_email (email),
+  KEY idx_users_role_enabled (role, enabled),
+  KEY idx_users_selected_avatar (selected_avatar_id),
+
+  CONSTRAINT fk_users_selected_avatar
+    FOREIGN KEY (selected_avatar_id)
+    REFERENCES avatars(id)
+    ON UPDATE CASCADE
+    ON DELETE SET NULL
+) ENGINE=InnoDB;
+-- =========================================================
+-- 3) user_game_progress
+-- =========================================================
+CREATE TABLE user_game_progress (
+  id           BIGINT NOT NULL AUTO_INCREMENT,
+  user_id      BIGINT      NOT NULL,
+  game_code    VARCHAR(20) NOT NULL,  -- es: 'FLAPPY'
+  best_score   INT         NOT NULL DEFAULT 0,
+  last_score   INT         NOT NULL DEFAULT 0,
+  played_count INT         NOT NULL DEFAULT 0,
+  updated_at   DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_progress_user_game (user_id, game_code),
+  KEY idx_progress_game_best (game_code, best_score),
+  KEY idx_progress_user (user_id),
+
+  CONSTRAINT fk_progress_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+) ENGINE=InnoDB;
+-- =========================================================
+-- Nota: Leaderboard = query, NON tabella
+-- Esempio:
+-- SELECT u.username, a.image_url, p.best_score
+-- FROM user_game_progress p
+-- JOIN users u ON u.id = p.user_id
+-- LEFT JOIN avatars a ON a.id = u.selected_avatar_id
+-- WHERE p.game_code='FLAPPY'
+-- ORDER BY p.best_score DESC
+-- LIMIT 20;
+-- =========================================================

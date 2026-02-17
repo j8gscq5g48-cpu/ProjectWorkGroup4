@@ -1,98 +1,343 @@
+/* =========================================================
+   ArcadeHub - style.css (COMUNE) | Mobile First
+   Tema palette (da immagine):
+   - nero:     #000001
+   - giallo:   #F9DC35
+   - bianco:   #FFFFFE
+   - arancio:  #FE9800
+   - verde 1:  #8AC048
+   - verde 2:  #4BAE4E
+   - verde 3:  #528A2C
+========================================================= */
+
+/* ============ Design Tokens (variabili) ============ */
 :root {
+    /* Tipografia base */
     font-size: 62.5%;
+    /* 1rem = 10px (comodo per i calcoli) */
 
+    /* Colori */
+    --colore-sfondo: #000001;
+    --colore-testo: #FFFFFE;
 
-    /* spazi */
-    --gap-m: 1rem;
-    --padding-m: .5rem;
+    --colore-primario: #F9DC35;
+    /* giallo */
+    --colore-accento: #FE9800;
+    /* arancio */
+    --colore-successo: #8AC048;
+    /* verde chiaro */
+    --colore-link: #F9DC35;
+    --colore-link-hover: #FE9800;
 
-    /* ombre */
-    --shadow-text-soft: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    /* Superfici (card/box) - trasparenze leggere su nero */
+    --superficie-1: rgba(255, 255, 254, 0.06);
+    --superficie-2: rgba(255, 255, 254, 0.10);
+    --bordo-1: rgba(255, 255, 254, 0.14);
+
+    /* Ombre */
+    --ombra-1: 0 10px 30px rgba(0, 0, 1, 0.55);
+
+    /* Spaziature (clamp per respirare su schermi diversi) */
+    --sp-1: clamp(0.8rem, 1.2vw, 1.2rem);
+    --sp-2: clamp(1.2rem, 1.8vw, 1.8rem);
+    --sp-3: clamp(1.6rem, 2.2vw, 2.4rem);
+    --sp-4: clamp(2.0rem, 3vw, 3.2rem);
+
+    /* Layout */
+    --container: 1100px;
+    --radius: 16px;
+
+    /* Header fisso */
+    --header-h: 64px;
+
+    /* Font sizes (clamp) */
+    --fs-body: clamp(1.5rem, 0.6vw + 1.3rem, 1.7rem);
+    --fs-h1: clamp(2.6rem, 2.5vw + 1.6rem, 4.2rem);
+    --fs-h2: clamp(2.0rem, 1.4vw + 1.5rem, 2.6rem);
+    --fs-small: clamp(1.2rem, 0.4vw + 1.0rem, 1.4rem);
 }
 
+/* ============ Reset / Base ============ */
 *,
-::after,
-::before {
-    margin: 0;
-    padding: 0;
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-/* layout grid flessibile */
-.layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--gap-m);
+html,
+body {
+    height: 100%;
 }
 
 body {
-    color: var(--text-color1);
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: 1.55;
+    color: var(--colore-testo);
+    background: radial-gradient(1200px 600px at 20% 0%, rgba(249, 220, 53, 0.10), transparent 55%),
+        radial-gradient(900px 500px at 90% 10%, rgba(254, 152, 0, 0.10), transparent 60%),
+        var(--colore-sfondo);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
 
-    font-size: 1.6rem;
-    width: 100%;
+/* Immagini responsive */
+img,
+svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
 
+a {
+    color: var(--colore-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--colore-link-hover);
+}
+
+/* Helper accessibilità */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* Focus visibile */
+:focus-visible {
+    outline: 3px solid rgba(249, 220, 53, 0.85);
+    outline-offset: 3px;
+    border-radius: 10px;
+}
+
+/* ============ Layout comune ============ */
+/* Mantiene footer sempre in fondo anche con pagine vuote */
+.layout {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-header,
-main,
-footer {
-    padding: var(--padding-m);
-}
-
-/* header comune */
-.header {
+/* Spazio sotto l’header fisso */
+main {
+    flex: 1;
+    padding-top: calc(var(--header-h) + var(--sp-3));
+    padding-inline: var(--sp-3);
     width: 100%;
+}
+
+/* Container opzionale (allineare contenuti) */
+main>* {
+    max-width: var(--container);
+    margin-inline: auto;
+}
+
+/* ============ Header (fisso sempre in alto) ============ */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-h);
+    z-index: 999;
+
+    background: rgba(0, 0, 1, 0.78);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--bordo-1);
+    box-shadow: var(--ombra-1);
 }
 
 .top-menu {
-    width: 100%;
-    font-size: clamp(1.4rem, 4vw, 2rem);
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
+/* UL: orizzontale + scorrimento su mobile (menu lungo) */
 .top-ul-menu {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-areas: "home gioca"
-        "accedi classifica"
-        "profilo profilo";
-}
-
-/* liste menu */
-.top-li {
-    text-align: center;
     list-style: none;
+    margin: 0;
+    padding: 0 var(--sp-2);
+
+    width: 100%;
+    display: flex;
+    gap: var(--sp-1);
+    align-items: center;
+
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    /* Firefox */
 }
 
-.top-li.home {
-    grid-area: home;
+.top-ul-menu::-webkit-scrollbar {
+    display: none;
+    /* Chrome */
 }
 
-.top-li.gioca {
-    grid-area: gioca;
+.top-li a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.9rem 1.2rem;
+    border-radius: 999px;
+
+    background: rgba(255, 255, 254, 0.06);
+    border: 1px solid rgba(255, 255, 254, 0.10);
+
+    color: var(--colore-testo);
+    font-weight: 700;
+    font-size: clamp(1.3rem, 0.4vw + 1.1rem, 1.5rem);
+    white-space: nowrap;
+
+    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 
-.top-li.accedi {
-    grid-area: accedi;
+.top-li a:hover {
+    transform: translateY(-1px);
+    background: rgba(249, 220, 53, 0.14);
+    border-color: rgba(249, 220, 53, 0.35);
 }
 
-.top-li.classifica {
-    grid-area: classifica;
+.top-li a[aria-current="page"] {
+    background: rgba(249, 220, 53, 0.20);
+    border-color: rgba(249, 220, 53, 0.60);
+    color: var(--colore-testo);
 }
 
-.top-li.profilo {
-    grid-area: profilo;
+/* ============ Footer (sempre in fondo) ============ */
+.footer {
+    margin-top: auto;
+    /* chiave per “sticky footer” con flex column */
+
+    padding: var(--sp-4) var(--sp-3);
+    border-top: 1px solid var(--bordo-1);
+    background: rgba(0, 0, 1, 0.55);
 }
 
-/* Stato pagina attiva (metti aria-current="page" nel link) */
-.top-ul-menu a[aria-current="page"] {
-    text-decoration: underline;
-    font-weight: bold;
+.footer section {
+    max-width: var(--container);
+    margin-inline: auto;
 
-    text-shadow: var(--shadow-text-soft);
+    background: var(--superficie-1);
+    border: 1px solid var(--bordo-1);
+    border-radius: var(--radius);
+    padding: var(--sp-3);
 }
 
-/* link menu */
-.top-li>a {
-    text-decoration: none;
+.footer h2 {
+    margin: 0 0 var(--sp-1);
+    font-size: var(--fs-h2);
+}
+
+.footer p {
+    margin: 0 0 var(--sp-2);
+    color: rgba(255, 255, 254, 0.88);
+}
+
+.footer ul {
+    margin: 0;
+    padding-left: 1.8rem;
+    display: grid;
+    gap: 0.6rem;
+}
+
+.footer>p {
+    max-width: var(--container);
+    margin: var(--sp-2) auto 0;
+    font-size: var(--fs-small);
+    opacity: 0.85;
+}
+
+/* ============ Tipografia comune ============ */
+h1,
+h2,
+h3 {
+    line-height: 1.15;
+    margin: 0 0 var(--sp-2);
+}
+
+h1 {
+    font-size: var(--fs-h1);
+}
+
+h2 {
+    font-size: var(--fs-h2);
+}
+
+p {
+    margin: 0 0 var(--sp-2);
+}
+
+/* ============ Componenti base riutilizzabili ============ */
+.card {
+    background: var(--superficie-1);
+    border: 1px solid var(--bordo-1);
+    border-radius: var(--radius);
+    padding: var(--sp-3);
+    box-shadow: var(--ombra-1);
+}
+
+.btn,
+.hero-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.8rem;
+    padding: 1.1rem 1.6rem;
+
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 254, 0.18);
+    background: rgba(255, 255, 254, 0.06);
+
+    color: var(--colore-testo);
+    font-weight: 800;
+    letter-spacing: 0.2px;
+
+    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.btn:hover,
+.hero-actions a:hover {
+    transform: translateY(-1px);
+    background: rgba(254, 152, 0, 0.14);
+    border-color: rgba(254, 152, 0, 0.45);
+}
+
+/* ============ Media query (solo migliorie, sempre mobile-first) ============ */
+@media (min-width: 768px) {
+    :root {
+        --header-h: 72px;
+    }
+
+    .top-ul-menu {
+        justify-content: center;
+        padding-inline: var(--sp-3);
+    }
+
+    main {
+        padding-inline: var(--sp-4);
+    }
+
+    .footer ul {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem 1.6rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .top-li a {
+        padding: 1.0rem 1.6rem;
+    }
 }

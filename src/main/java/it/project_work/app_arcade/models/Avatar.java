@@ -1,4 +1,4 @@
-package it.project_work.app_arcade.model;
+package it.project_work.app_arcade.models;
 
 import jakarta.persistence.*;
 

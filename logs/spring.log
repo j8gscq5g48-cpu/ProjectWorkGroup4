@@ -1058,3 +1058,331 @@ Consider renaming one of the beans or enabling overriding by setting spring.main
 2026-02-17T14:25:26.812+01:00  INFO 20992 --- [arcadehub] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 13 ms
 2026-02-17T14:26:23.489+01:00 DEBUG 20992 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
 2026-02-17T14:26:23.514+01:00 TRACE 20992 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [marco]
+2026-02-17T14:39:23.888+01:00  INFO 29052 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : Starting AppArcadeApplication using Java 21.0.9 with PID 29052 (C:\Users\96and\Desktop\ProjectWork\ProjectWorkGroup4\target\classes started by 96and in C:\Users\96and\Desktop\ProjectWork\ProjectWorkGroup4)
+2026-02-17T14:39:23.893+01:00  INFO 29052 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-02-17T14:39:23.966+01:00  INFO 29052 --- [arcadehub] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-02-17T14:39:23.966+01:00  INFO 29052 --- [arcadehub] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-02-17T14:39:24.891+01:00  INFO 29052 --- [arcadehub] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-17T14:39:24.980+01:00  INFO 29052 --- [arcadehub] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 74 ms. Found 3 JPA repository interfaces.
+2026-02-17T14:39:25.889+01:00  INFO 29052 --- [arcadehub] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-17T14:39:25.911+01:00  INFO 29052 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-17T14:39:25.913+01:00  INFO 29052 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-17T14:39:25.981+01:00  INFO 29052 --- [arcadehub] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2014 ms
+2026-02-17T14:39:26.307+01:00  INFO 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-17T14:39:26.384+01:00  INFO 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-17T14:39:27.033+01:00  INFO 29052 --- [arcadehub] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-17T14:39:27.072+01:00  INFO 29052 --- [arcadehub] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-17T14:39:28.614+01:00  WARN 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 1045, SQLState: 28000
+2026-02-17T14:39:28.616+01:00  WARN 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.jdbc.error             : Access denied for user 'root'@'localhost' (using password: YES)
+2026-02-17T14:39:28.619+01:00  WARN 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.jdbc                   : HHH100046: Could not obtain connection to query JDBC database metadata
+
+org.hibernate.exception.AuthException: Unable to obtain isolated JDBC connection [Access denied for user 'root'@'localhost' (using password: YES)] [n/a]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:87) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:34) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:115) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:101) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:51) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:366) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironment(JdbcEnvironmentInitiator.java:143) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:120) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:80) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:133) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:260) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:235) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:212) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:44) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:251) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:203) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:170) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1392) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.populateSessionFactoryBuilder(EntityManagerFactoryBuilderImpl.java:1472) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1454) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:433) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:416) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:409) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1864) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1813) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:976) ~[spring-context-7.0.3.jar:7.0.3]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:620) ~[spring-context-7.0.3.jar:7.0.3]
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.2.jar:4.0.2]
+	at it.project_work.app_arcade.AppArcadeApplication.main(AppArcadeApplication.java:10) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:52) ~[spring-boot-devtools-4.0.2.jar:4.0.2]
+Caused by: java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: YES)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:840) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:416) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:180) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:137) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:508) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:48) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	... 40 common frames omitted
+
+2026-02-17T14:39:28.658+01:00  WARN 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-17T14:39:28.669+01:00  INFO 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [undefined/unknown]
+	Database driver: undefined/unknown
+	Database dialect: MySQLDialect
+	Database version: 8.0
+	Default catalog/schema: unknown/unknown
+	Autocommit mode: undefined/unknown
+	Isolation level: NONE [default NONE]
+	JDBC fetch size: undefined/unknown
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-17T14:39:29.566+01:00  INFO 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-17T14:39:29.588+01:00  INFO 29052 --- [arcadehub] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-17T14:39:30.600+01:00  WARN 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 1045, SQLState: 28000
+2026-02-17T14:39:30.600+01:00  WARN 29052 --- [arcadehub] [restartedMain] org.hibernate.orm.jdbc.error             : Access denied for user 'root'@'localhost' (using password: YES)
+2026-02-17T14:39:30.605+01:00 ERROR 29052 --- [arcadehub] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.exception.AuthException: Unable to open JDBC Connection for DDL execution [Access denied for user 'root'@'localhost' (using password: YES)] [n/a]
+2026-02-17T14:39:30.607+01:00  WARN 29052 --- [arcadehub] [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.exception.AuthException: Unable to open JDBC Connection for DDL execution [Access denied for user 'root'@'localhost' (using password: YES)] [n/a]
+2026-02-17T14:39:30.612+01:00  INFO 29052 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-02-17T14:39:30.624+01:00  INFO 29052 --- [arcadehub] [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-02-17T14:39:30.638+01:00 ERROR 29052 --- [arcadehub] [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/hibernate/autoconfigure/HibernateJpaConfiguration.class]: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.exception.AuthException: Unable to open JDBC Connection for DDL execution [Access denied for user 'root'@'localhost' (using password: YES)] [n/a]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1817) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:976) ~[spring-context-7.0.3.jar:7.0.3]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:620) ~[spring-context-7.0.3.jar:7.0.3]
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143) ~[spring-boot-web-server-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365) ~[spring-boot-4.0.2.jar:4.0.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-4.0.2.jar:4.0.2]
+	at it.project_work.app_arcade.AppArcadeApplication.main(AppArcadeApplication.java:10) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:52) ~[spring-boot-devtools-4.0.2.jar:4.0.2]
+Caused by: jakarta.persistence.PersistenceException: Unable to build Hibernate SessionFactory  [persistence unit: default] ; nested exception is org.hibernate.exception.AuthException: Unable to open JDBC Connection for DDL execution [Access denied for user 'root'@'localhost' (using password: YES)] [n/a]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:428) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:409) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1864) ~[spring-beans-7.0.3.jar:7.0.3]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1813) ~[spring-beans-7.0.3.jar:7.0.3]
+	... 18 common frames omitted
+Caused by: org.hibernate.exception.AuthException: Unable to open JDBC Connection for DDL execution [Access denied for user 'root'@'localhost' (using password: YES)] [n/a]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:87) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:34) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:115) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:101) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:71) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:37) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.internal.exec.ImprovedExtractionContextImpl.getJdbcConnection(ImprovedExtractionContextImpl.java:61) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.internal.exec.ImprovedExtractionContextImpl.getJdbcDatabaseMetaData(ImprovedExtractionContextImpl.java:68) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.extract.internal.InformationExtractorJdbcDatabaseMetaDataImpl.getJdbcDatabaseMetaData(InformationExtractorJdbcDatabaseMetaDataImpl.java:38) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.extract.internal.InformationExtractorJdbcDatabaseMetaDataImpl.processTableResultSet(InformationExtractorJdbcDatabaseMetaDataImpl.java:76) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.extract.internal.AbstractInformationExtractorImpl.getTables(AbstractInformationExtractorImpl.java:496) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl.getTablesInformation(DatabaseInformationImpl.java:124) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.internal.GroupedSchemaValidatorImpl.validateTables(GroupedSchemaValidatorImpl.java:37) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.performValidation(AbstractSchemaValidator.java:90) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaValidator.doValidation(AbstractSchemaValidator.java:68) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:278) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$1(SchemaManagementToolCoordinator.java:101) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429) ~[na:na]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:100) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:35) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:33) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:323) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.internal.SessionFactoryRegistry.instantiateSessionFactory(SessionFactoryRegistry.java:64) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:437) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1456) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:433) ~[spring-orm-7.0.3.jar:7.0.3]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:416) ~[spring-orm-7.0.3.jar:7.0.3]
+	... 22 common frames omitted
+Caused by: java.sql.SQLException: Access denied for user 'root'@'localhost' (using password: YES)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:840) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:416) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:180) ~[mysql-connector-j-9.5.0.jar:9.5.0]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-7.0.2.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DataSourceConnectionProvider.getConnection(DataSourceConnectionProvider.java:137) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:508) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:44) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
+	... 45 common frames omitted
+
+2026-02-17T14:41:31.519+01:00  INFO 11248 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : Starting AppArcadeApplication using Java 21.0.9 with PID 11248 (C:\Users\96and\Desktop\ProjectWork\ProjectWorkGroup4\target\classes started by 96and in C:\Users\96and\Desktop\ProjectWork\ProjectWorkGroup4)
+2026-02-17T14:41:31.527+01:00  INFO 11248 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-02-17T14:41:31.615+01:00  INFO 11248 --- [arcadehub] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-02-17T14:41:31.616+01:00  INFO 11248 --- [arcadehub] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-02-17T14:41:32.613+01:00  INFO 11248 --- [arcadehub] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-17T14:41:32.686+01:00  INFO 11248 --- [arcadehub] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 3 JPA repository interfaces.
+2026-02-17T14:41:33.605+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-17T14:41:33.629+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-17T14:41:33.630+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-17T14:41:33.696+01:00  INFO 11248 --- [arcadehub] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2079 ms
+2026-02-17T14:41:34.122+01:00  INFO 11248 --- [arcadehub] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-17T14:41:34.231+01:00  INFO 11248 --- [arcadehub] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-17T14:41:34.949+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-17T14:41:34.986+01:00  INFO 11248 --- [arcadehub] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-17T14:41:35.208+01:00  INFO 11248 --- [arcadehub] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@719a89d6
+2026-02-17T14:41:35.213+01:00  INFO 11248 --- [arcadehub] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-17T14:41:35.318+01:00  WARN 11248 --- [arcadehub] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-17T14:41:35.342+01:00  INFO 11248 --- [arcadehub] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/arcadehub?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: arcadehub/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-17T14:41:36.148+01:00  INFO 11248 --- [arcadehub] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-17T14:41:36.228+01:00  INFO 11248 --- [arcadehub] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-17T14:41:36.322+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-17T14:41:36.657+01:00  WARN 11248 --- [arcadehub] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-17T14:41:36.753+01:00  INFO 11248 --- [arcadehub] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-02-17T14:41:37.066+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
+2026-02-17T14:41:37.453+01:00  INFO 11248 --- [arcadehub] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-17T14:41:37.461+01:00  INFO 11248 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : Started AppArcadeApplication in 6.491 seconds (process running for 7.012)
+2026-02-17T14:41:45.459+01:00  INFO 11248 --- [arcadehub] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-17T14:41:45.460+01:00  INFO 11248 --- [arcadehub] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-17T14:41:45.463+01:00  INFO 11248 --- [arcadehub] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-02-17T14:42:22.834+01:00 DEBUG 11248 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:42:22.847+01:00 TRACE 11248 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [marco]
+2026-02-17T14:48:54.185+01:00  INFO 24872 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : Starting AppArcadeApplication using Java 21.0.9 with PID 24872 (C:\Users\96and\Desktop\ProjectWork\ProjectWorkGroup4\target\classes started by 96and in C:\Users\96and\Desktop\ProjectWork\ProjectWorkGroup4)
+2026-02-17T14:48:54.190+01:00  INFO 24872 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : No active profile set, falling back to 1 default profile: "default"
+2026-02-17T14:48:54.283+01:00  INFO 24872 --- [arcadehub] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-02-17T14:48:54.283+01:00  INFO 24872 --- [arcadehub] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-02-17T14:48:55.367+01:00  INFO 24872 --- [arcadehub] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-17T14:48:55.428+01:00  INFO 24872 --- [arcadehub] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 51 ms. Found 3 JPA repository interfaces.
+2026-02-17T14:48:56.303+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-17T14:48:56.322+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-17T14:48:56.323+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-17T14:48:56.380+01:00  INFO 24872 --- [arcadehub] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2096 ms
+2026-02-17T14:48:56.677+01:00  INFO 24872 --- [arcadehub] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-17T14:48:56.755+01:00  INFO 24872 --- [arcadehub] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-17T14:48:57.385+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-17T14:48:57.428+01:00  INFO 24872 --- [arcadehub] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-17T14:48:57.605+01:00  INFO 24872 --- [arcadehub] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@719a89d6
+2026-02-17T14:48:57.607+01:00  INFO 24872 --- [arcadehub] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-17T14:48:57.663+01:00  WARN 24872 --- [arcadehub] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-17T14:48:57.684+01:00  INFO 24872 --- [arcadehub] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/arcadehub?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.44
+	Default catalog/schema: arcadehub/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-17T14:48:58.551+01:00  INFO 24872 --- [arcadehub] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-17T14:48:58.611+01:00  INFO 24872 --- [arcadehub] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-17T14:48:58.699+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-17T14:48:59.012+01:00  WARN 24872 --- [arcadehub] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-17T14:48:59.141+01:00  INFO 24872 --- [arcadehub] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-02-17T14:48:59.473+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page: class path resource [static/index.html]
+2026-02-17T14:48:59.910+01:00  INFO 24872 --- [arcadehub] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-17T14:48:59.918+01:00  INFO 24872 --- [arcadehub] [restartedMain] i.p.app_arcade.AppArcadeApplication      : Started AppArcadeApplication in 6.305 seconds (process running for 6.807)
+2026-02-17T14:49:07.566+01:00  INFO 24872 --- [arcadehub] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-17T14:49:07.567+01:00  INFO 24872 --- [arcadehub] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-17T14:49:07.569+01:00  INFO 24872 --- [arcadehub] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-02-17T14:49:08.131+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.136+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.211+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-2] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.212+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.218+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.219+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.225+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-4] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.226+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.231+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.233+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.240+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-6] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.240+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-6] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.246+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-7] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.247+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-7] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.254+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-8] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.254+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-8] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.260+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-9] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.260+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.266+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-10] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.267+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:49:08.277+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:49:08.278+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.350+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.351+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.358+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-4] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.358+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.367+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.369+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.379+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-6] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.380+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-6] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.390+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-7] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.391+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-7] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.400+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-8] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.401+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-8] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.408+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-9] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.409+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.419+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-10] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.420+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.426+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.427+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:52:38.434+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-2] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:52:38.434+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.369+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-4] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.371+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-4] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.378+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.379+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.386+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-6] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.387+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-6] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.394+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-7] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.394+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-7] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.400+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-8] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.401+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-8] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.408+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-9] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.409+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.417+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-10] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.418+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-10] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.424+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.424+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.432+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-2] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.434+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []
+2026-02-17T14:53:01.440+01:00 DEBUG 24872 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.enabled,u1_0.level,u1_0.password_hash,u1_0.role,u1_0.selected_avatar_id,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-02-17T14:53:01.442+01:00 TRACE 24872 --- [arcadehub] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- []

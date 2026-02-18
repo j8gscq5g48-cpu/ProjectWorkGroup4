@@ -24,9 +24,7 @@ public class SecurityConfig {
                 // pagine + asset pubblici
                 .requestMatchers(
                         "/",
-                        "/index.html",
-                        "/play.html",
-                        "/auth.html",
+                        "/**/*.html", 
                         "/css/**",
                         "/js/**",
                         "/assets/**",

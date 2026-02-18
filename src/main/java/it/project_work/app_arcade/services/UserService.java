@@ -10,14 +10,19 @@ import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.AvatarRepository;
 import it.project_work.app_arcade.repositories.ProgressRepository;
 import it.project_work.app_arcade.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService extends GenericService<Long, User, UserRepository> {
-    @Autowired
-    AvatarRepository avatarRepository;
+    private final AvatarRepository avatarRepository;
 
-    @Autowired
-    ProgressRepository progressRepository;
+    private final ProgressRepository progressRepository;
+    
+    public UserService(AvatarRepository avatarRepository, 
+                       ProgressRepository progressRepository) {
+        this.avatarRepository = avatarRepository;
+        this.progressRepository = progressRepository;
+    }
 
     public List<UserGameProgress> me(Long userId) {
         return progressRepository.findByUserId(userId);
@@ -29,6 +34,7 @@ public class UserService extends GenericService<Long, User, UserRepository> {
     }
 
 
+    @Transactional
     public User updateAvatar(Long userId, Long avatarId) {
         User user = getRepository().findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));

@@ -1,278 +1,296 @@
-/* main della pagina gioco: prende tutto lo spazio utile */
+/* =========================================================
+   play.css (SOLO PLAY) - mobile first
+   Dipende da style.css (tokens, .btn, .card base, header/footer)
+========================================================= */
+
 .main-game {
-    flex: 1;
-    padding: 0;
-    width: 100%;
-    max-width: var(--container);
-    margin-inline: auto;
-}
-
-/* contenitore canvas: evita overflow e mantiene rapporto pulito */
-#canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-/* area gioco: altezza = viewport - header */
-.main-game {
-    height: calc(100dvh - var(--header-h));
-
-}
-
-/* se vuoi evitare scrolling */
-body {
-    overflow: hidden;
-}
-
-/* GRID */
-.games {
-    padding-top: calc(var(--header-h) + var(--sp-3));
-    padding-inline: var(--sp-3);
     padding-bottom: var(--sp-4);
+    display: grid;
+    gap: var(--sp-3);
+}
+
+/* ============ Sezione Games ============ */
+.games {
+    background: linear-gradient(180deg, var(--superficie-2), var(--superficie-1));
+    border: 1px solid rgba(255, 255, 254, 0.16);
+    border-radius: clamp(1.6rem, 3vw, 2.4rem);
+    padding: clamp(1.6rem, 2.6vw, 3.2rem);
+    box-shadow: var(--ombra-1);
+    backdrop-filter: blur(10px);
 }
 
 .games-header h1 {
-    font-size: clamp(2.4rem, 2.4vw + 1.2rem, 3.6rem);
-    margin-bottom: .8rem;
+    margin: 0 0 0.8rem;
+    font-size: var(--fs-h1);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 22px rgba(249, 220, 53, 0.12);
 }
 
 .games-header p {
-    opacity: .9;
-    margin-bottom: var(--sp-3);
+    margin: 0;
+    max-width: 62ch;
+    color: rgba(255, 255, 254, 0.80);
 }
 
+/* Grid */
 .games-grid {
+    margin-top: var(--sp-3);
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--sp-3);
 }
 
-@media (min-width: 768px) {
-    .games-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1024px) {
-    .games-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
+/* Card gioco (button) */
 .game-card {
+    width: 100%;
     text-align: left;
-    border-radius: var(--radius);
-    border: 1px solid rgba(255, 255, 254, .16);
-    background: rgba(255, 255, 254, .06);
-    overflow: hidden;
-    box-shadow: var(--ombra-1);
-    cursor: pointer;
     padding: 0;
-}
+    border: 1px solid rgba(255, 255, 254, 0.16);
+    border-radius: 18px;
 
-.game-card:disabled {
-    opacity: .5;
-    cursor: not-allowed;
+    background: rgba(255, 255, 254, 0.05);
+    color: var(--colore-testo);
+
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 14px 40px rgba(0, 0, 1, 0.55);
+
+    transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
 }
 
 .game-card img {
     width: 100%;
-    height: clamp(140px, 22vw, 200px);
+    height: clamp(150px, 24vw, 220px);
     object-fit: cover;
     display: block;
+    border-bottom: 1px solid rgba(255, 255, 254, 0.10);
 }
 
 .game-card-body {
     padding: var(--sp-3);
-    color: var(--colore-testo);
+    display: grid;
+    gap: 0.6rem;
 }
 
 .game-card-body h2 {
-    margin: 0 0 .6rem;
-    font-size: clamp(1.6rem, 1.2vw + 1.2rem, 2.0rem);
+    margin: 0;
+    font-size: var(--fs-h2);
+    line-height: 1.1;
 }
 
 .game-card-body p {
     margin: 0;
-    opacity: .9;
+    color: rgba(255, 255, 254, 0.78);
 }
 
-/* OVERLAY */
+.game-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(249, 220, 53, 0.45);
+    background: rgba(255, 255, 254, 0.07);
+}
+
+.game-card:focus-visible {
+    outline: 2px solid var(--colore-primario);
+    outline-offset: 3px;
+}
+
+.game-card:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============ Overlay gioco (canvas) ============ */
 .game-overlay {
     position: fixed;
     inset: 0;
-    display: none;
     z-index: 2000;
-    background: rgba(0, 0, 1, .72);
-    backdrop-filter: blur(8px);
+
+    display: none;
+    place-items: center;
+
+    background: rgba(0, 0, 1, 0.72);
+    backdrop-filter: blur(6px);
+    padding: var(--sp-2);
 }
 
-.game-overlay.is-open {
+/* quando lo apri via JS: toggle aria-hidden="false" */
+.game-overlay[aria-hidden="false"] {
     display: grid;
-    place-items: stretch;
 }
 
 .game-shell {
-    position: relative;
-    width: 100%;
-    height: calc(100dvh - var(--header-h));
+    width: min(980px, 100%);
+    border-radius: 20px;
 
-    /* sotto header */
-    margin-top: var(--header-h);
+    background: rgba(0, 0, 1, 0.88);
+    border: 1px solid rgba(255, 255, 254, 0.14);
+    box-shadow: 0 25px 70px rgba(0, 0, 1, 0.75);
+    overflow: hidden;
+
+    position: relative;
 }
 
+/* Close button */
 .game-close {
     position: absolute;
-    top: var(--sp-2);
-    right: var(--sp-2);
+    top: 10px;
+    right: 10px;
+
     width: 44px;
     height: 44px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 254, .22);
-    background: rgba(0, 0, 1, .55);
+    border-radius: 14px;
+
+    border: 1px solid rgba(255, 255, 254, 0.14);
+    background: rgba(255, 255, 254, 0.06);
     color: var(--colore-testo);
-    font-size: 2rem;
-    line-height: 1;
+
     cursor: pointer;
+    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.game-close:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 254, 0.10);
+    border-color: rgba(249, 220, 53, 0.45);
+}
+
+.game-close:focus-visible {
+    outline: 2px solid var(--colore-primario);
+    outline-offset: 3px;
 }
 
 .game-stage {
-    width: 100%;
-    height: 100%;
+    padding: clamp(1.2rem, 2vw, 2rem);
 }
 
-/* ============ MODAL CUSTOM ============ */
+/* Canvas container: deve essere “stabile” e responsive */
+.game-stage canvas {
+    width: 100%;
+    height: min(70vh, 520px);
+    display: block;
+
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 254, 0.14);
+    background: rgba(0, 0, 1, 0.35);
+}
+
+/* ============ Modal custom (exit) ============ */
 .modal {
     position: fixed;
     inset: 0;
-    display: none;
     z-index: 3000;
+    display: none;
 }
 
-.modal.is-open {
-    display: grid;
-    place-items: center;
+.modal[aria-hidden="false"] {
+    display: block;
 }
 
 .modal-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 1, .72);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 1, 0.72);
+    backdrop-filter: blur(6px);
 }
 
 .modal-panel {
     position: relative;
-    width: min(520px, calc(100vw - 2 * var(--sp-3)));
-    border-radius: clamp(1.4rem, 2vw, 2rem);
-    padding: clamp(1.8rem, 2.4vw, 2.8rem);
+    width: min(520px, calc(100% - 2 * var(--sp-2)));
+    margin: 12vh auto 0;
 
-    background: linear-gradient(180deg, rgba(255, 255, 254, .12), rgba(255, 255, 254, .06));
-    border: 1px solid rgba(255, 255, 254, .18);
-    box-shadow: 0 18px 50px rgba(0, 0, 1, .60);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 254, 0.14);
+    background: rgba(0, 0, 1, 0.92);
+    box-shadow: 0 25px 70px rgba(0, 0, 1, 0.75);
+
+    padding: var(--sp-3);
 }
 
 .modal-title {
-    margin: 0 0 .8rem;
-    font-size: clamp(1.8rem, 1.2vw + 1.4rem, 2.2rem);
+    margin: 0 0 0.8rem;
+    font-size: var(--fs-h2);
 }
 
 .modal-text {
     margin: 0 0 var(--sp-3);
-    opacity: .9;
+    color: rgba(255, 255, 254, 0.80);
 }
 
 .modal-actions {
     display: flex;
-    gap: var(--sp-2);
     justify-content: flex-end;
+    gap: var(--sp-2);
+    flex-wrap: wrap;
 }
 
-/* Bottoni coerenti */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.0rem 1.4rem;
-    border-radius: 999px;
-    font-weight: 800;
-    border: 1px solid rgba(255, 255, 254, .18);
-    background: rgba(255, 255, 254, .08);
-    color: var(--colore-testo);
-    cursor: pointer;
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-}
-
-.btn-primary {
-    background: rgba(249, 220, 53, .92);
-    border-color: rgba(249, 220, 53, .95);
-    color: #000001;
-}
-
-.btn-primary:hover {
-    background: rgba(254, 152, 0, .92);
-    border-color: rgba(254, 152, 0, .95);
-}
-
-.btn-ghost {
-    background: rgba(0, 0, 1, .35);
-    border-color: rgba(255, 255, 254, .20);
-}
-
-.btn-ghost:hover {
-    background: rgba(255, 255, 254, .10);
-}
-
-
-/* ============ ROTATE OVERLAY ============ */
+/* ============ Rotate overlay (landscape required) ============ */
 .rotate {
     position: fixed;
     inset: 0;
-    display: none;
     z-index: 3500;
-    background: rgba(0, 0, 1, .80);
-    backdrop-filter: blur(10px);
+    display: none;
+
+    background: rgba(0, 0, 1, 0.72);
+    backdrop-filter: blur(6px);
+    padding: var(--sp-2);
 }
 
-.rotate.is-open {
+.rotate[aria-hidden="false"] {
     display: grid;
     place-items: center;
 }
 
 .rotate-panel {
-    width: min(520px, calc(100vw - 2 * var(--sp-3)));
-    border-radius: clamp(1.4rem, 2vw, 2rem);
-    padding: clamp(1.8rem, 2.4vw, 2.8rem);
-    background: linear-gradient(180deg, rgba(255, 255, 254, .12), rgba(255, 255, 254, .06));
-    border: 1px solid rgba(255, 255, 254, .18);
-    box-shadow: 0 18px 50px rgba(0, 0, 1, .60);
-    text-align: center;
+    width: min(520px, calc(100% - 2 * var(--sp-2)));
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 254, 0.14);
+    background: rgba(0, 0, 1, 0.92);
+    box-shadow: 0 25px 70px rgba(0, 0, 1, 0.75);
+    padding: var(--sp-3);
 }
 
 .rotate-title {
-    margin: 0 0 .8rem;
-    font-size: clamp(1.8rem, 1.2vw + 1.4rem, 2.2rem);
+    margin: 0 0 0.8rem;
+    font-size: var(--fs-h2);
 }
 
 .rotate-text {
     margin: 0 0 var(--sp-3);
-    opacity: .95;
+    color: rgba(255, 255, 254, 0.80);
 }
 
 .rotate-actions {
     display: flex;
+    justify-content: flex-end;
     gap: var(--sp-2);
-    justify-content: center;
     flex-wrap: wrap;
 }
 
-/* Mostra il rotate overlay solo su device piccoli in portrait */
-@media (max-width: 900px) and (orientation: portrait) {
-    .rotate.auto-show {
-        display: grid;
+fieldset.is-invalid {
+    border-color: rgba(255, 77, 77, .6);
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, .12);
+}
+
+
+/* ============ Responsive ============ */
+@media (min-width: 720px) {
+    .games-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .game-stage canvas {
+        height: min(72vh, 560px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .game-shell {
+        width: min(1100px, 100%);
+    }
+
+    .game-stage canvas {
+        height: min(74vh, 620px);
     }
 }

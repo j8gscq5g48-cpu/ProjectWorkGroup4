@@ -34,8 +34,7 @@ public class SecurityConfig {
                         "/assets/**",
                         "/images/**",
                         "/partials/**",
-                        "/audio/**",
-                        "/favicon.ico"
+                        "/audio/**"
                 ).permitAll()
                 // API pubbliche 
                 .requestMatchers("/api/leaderboard").permitAll()

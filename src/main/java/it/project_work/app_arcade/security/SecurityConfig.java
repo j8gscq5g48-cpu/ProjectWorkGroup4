@@ -34,9 +34,10 @@ public class SecurityConfig {
                         "/assets/**",
                         "/images/**",
                         "/partials/**",
+                        "/audio/**",
                         "/favicon.ico"
                 ).permitAll()
-                // API pubbliche (se ne avete)
+                // API pubbliche 
                 .requestMatchers("/api/leaderboard").permitAll()
                 // API che richiedono login
                 .requestMatchers("/api/game/score").authenticated()

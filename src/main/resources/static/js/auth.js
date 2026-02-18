@@ -1,17 +1,18 @@
 /* =========================================================
-   auth.js (puro JS)
-   - toggle password (login/register)
-   - switch login <-> register
-   - validazione con regex + messaggi inline
+   auth.js (puro JS + api.js)
+   - toggle password
+   - switch login/register
+   - validazione client-side (soft)
+   - submit via api.post() con session cookie
+   - mapping errori: ApiError.fieldErrors -> form
 ========================================================= */
 
 (() => {
-    // ---------- Helpers DOM ----------
     const $ = (sel, root = document) => root.querySelector(sel);
 
+    // ---------------- Helpers UI ----------------
     function setHidden(el, hidden) {
-        if (!el) return;
-        el.hidden = !!hidden;
+        if (el) el.hidden = !!hidden;
     }
 
     function setAlert(alertEl, { type = "info", message = "" } = {}) {
@@ -24,124 +25,51 @@
         }
         alertEl.hidden = false;
         alertEl.textContent = message;
-        alertEl.dataset.type = type; // utile se vuoi stilare via CSS [data-type="error"]
+        alertEl.dataset.type = type; // utile per CSS: [data-type="error"]
     }
 
-    function fieldErrorEl(input) {
-        if (!input?.id) return null;
-        return document.querySelector(`[data-error-for="${input.id}"]`);
+    function fieldErrorElById(inputId) {
+        return document.querySelector(`[data-error-for="${inputId}"]`);
     }
 
-    function setFieldError(input, message = "") {
-        const err = fieldErrorEl(input);
-        if (!err) return;
+    function setFieldErrorById(inputId, message = "") {
+        const err = fieldErrorElById(inputId);
+        const inp = document.getElementById(inputId);
 
-        if (!message) {
-            err.hidden = true;
-            err.textContent = "";
-            input.removeAttribute("aria-invalid");
-        } else {
-            err.hidden = false;
-            err.textContent = message;
-            input.setAttribute("aria-invalid", "true");
+        if (err) {
+            if (!message) {
+                err.hidden = true;
+                err.textContent = "";
+            } else {
+                err.hidden = false;
+                err.textContent = message;
+            }
+        }
+
+        if (inp) {
+            if (!message) inp.removeAttribute("aria-invalid");
+            else inp.setAttribute("aria-invalid", "true");
         }
     }
 
     function clearFormErrors(form) {
         if (!form) return;
-        const inputs = form.querySelectorAll("input");
-        inputs.forEach((inp) => setFieldError(inp, ""));
-        const alertEl = $(".auth-alert", form.closest(".auth-card") || form);
-        setAlert(alertEl, { message: "" });
+
+        // pulisci tutti i data-error-for presenti nel form
+        form.querySelectorAll("[data-error-for]").forEach((el) => {
+            el.hidden = true;
+            el.textContent = "";
+        });
+
+        // reset aria-invalid su input
+        form.querySelectorAll("input").forEach((inp) => inp.removeAttribute("aria-invalid"));
+
+        // reset alert globale della card
+        const card = form.closest(".auth-card") || form;
+        setAlert($(".auth-alert", card), { message: "" });
     }
 
-    // ---------- Regex + regole ----------
-    // Username: 3-50, lettere/numeri/._- , no spazi
-    const USERNAME_RE = /^[a-zA-Z0-9._-]{3,50}$/;
-
-    // Email: usare la validazione nativa + check leggero (non esagerare: RFC è infinito)
-    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-    // Password: min 6; consiglio: almeno 1 lettera e 1 numero (modificabile)
-    const PASSWORD_RE = /^(?=.*[A-Za-z])(?=.*\d).{6,72}$/;
-
-    function validateUsername(input) {
-        const v = input.value.trim();
-        if (!v) return "Username obbligatorio.";
-        if (v.length > 50) return "Max 50 caratteri.";
-        if (!USERNAME_RE.test(v)) return "Solo lettere, numeri e . _ - (min 3).";
-        return "";
-    }
-
-    function validateEmail(input) {
-        const v = input.value.trim();
-        if (!v) return "Email obbligatoria.";
-        if (v.length > 255) return "Max 255 caratteri.";
-        if (!EMAIL_RE.test(v)) return "Inserisci un’email valida.";
-        return "";
-    }
-
-    function validatePassword(input) {
-        const v = input.value;
-        if (!v) return "Password obbligatoria.";
-        if (v.length < 6) return "Min 6 caratteri.";
-        if (v.length > 72) return "Max 72 caratteri.";
-        if (!PASSWORD_RE.test(v)) return "Deve contenere almeno 1 lettera e 1 numero.";
-        return "";
-    }
-
-    function validateAvatar(form) {
-        const checked = form.querySelector('input[name="avatarId"]:checked');
-        // In register l'avatarId è required: se non c'è, errore
-        if (!checked) return "Seleziona un avatar.";
-        return "";
-    }
-
-    function validateForm(form) {
-        let ok = true;
-
-        const isRegister = form.id === "register-form";
-
-        const username = form.querySelector('input[name="username"]');
-        const password = form.querySelector('input[name="password"]');
-
-        if (username) {
-            const msg = validateUsername(username);
-            setFieldError(username, msg);
-            if (msg) ok = false;
-        }
-
-        if (isRegister) {
-            const email = form.querySelector('input[name="email"]');
-            if (email) {
-                const msg = validateEmail(email);
-                setFieldError(email, msg);
-                if (msg) ok = false;
-            }
-        }
-
-        if (password) {
-            const msg = validatePassword(password);
-            setFieldError(password, msg);
-            if (msg) ok = false;
-        }
-
-        if (isRegister) {
-            const msg = validateAvatar(form);
-            // l'errore avatar lo attacchiamo a un "placeholder" data-error-for="avatarId"
-            const fake = { id: "avatarId", setAttribute() { }, removeAttribute() { } };
-            const errEl = document.querySelector(`[data-error-for="avatarId"]`);
-            if (errEl) {
-                errEl.hidden = !msg;
-                errEl.textContent = msg || "";
-            }
-            if (msg) ok = false;
-        }
-
-        return ok;
-    }
-
-    // ---------- Toggle password ----------
+    // ---------------- Toggle password ----------------
     function setupPasswordToggle(btnSelector, inputSelector) {
         const btn = $(btnSelector);
         const input = $(inputSelector);
@@ -151,26 +79,21 @@
             const isPwd = input.type === "password";
             input.type = isPwd ? "text" : "password";
             btn.setAttribute("aria-pressed", String(isPwd));
-            // opzionale: cambia icona testo
             btn.textContent = isPwd ? "🙈" : "👁️";
         });
     }
 
-    // ---------- Switch login/register ----------
+    // ---------------- Switch login/register ----------------
     function setupAuthSwitch() {
         const loginSection = $("#login-section");
         const registerSection = $("#register-section");
-
         const showRegisterLink = $("#show-register");
         const showLoginLink = $("#show-login");
 
         function showLogin() {
             setHidden(registerSection, true);
             setHidden(loginSection, false);
-            // reset errori registro
-            const regForm = $("#register-form");
-            clearFormErrors(regForm);
-            // focus primo campo login
+            clearFormErrors($("#register-form"));
             $("#login-username")?.focus();
             history.replaceState(null, "", "#login");
         }
@@ -178,10 +101,7 @@
         function showRegister() {
             setHidden(loginSection, true);
             setHidden(registerSection, false);
-            // reset errori login
-            const loginForm = $("#login-form");
-            clearFormErrors(loginForm);
-            // focus primo campo register
+            clearFormErrors($("#login-form"));
             $("#reg-username")?.focus();
             history.replaceState(null, "", "#register");
         }
@@ -196,96 +116,184 @@
             showLogin();
         });
 
-        // deep link opzionale: /login-register.html#register
         if (location.hash === "#register") showRegister();
         else showLogin();
     }
 
-    // ---------- Validazione realtime (blur/input) ----------
-    function setupRealtimeValidation(form) {
-        if (!form) return;
+    // ---------------- Client-side validation (leggera) ----------------
+    const USERNAME_RE = /^[a-zA-Z0-9._-]{3,50}$/;
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-        form.addEventListener("input", (e) => {
-            const t = e.target;
-            if (!(t instanceof HTMLInputElement)) return;
+    function validateLogin({ username, password }) {
+        const fieldErrors = {};
 
-            // valida "soft" solo il campo modificato
-            if (t.name === "username") setFieldError(t, validateUsername(t));
-            if (t.name === "email") setFieldError(t, validateEmail(t));
-            if (t.name === "password") setFieldError(t, validatePassword(t));
+        if (!username?.trim()) fieldErrors["login-username"] = "Username obbligatorio.";
+        else if (!USERNAME_RE.test(username.trim())) fieldErrors["login-username"] = "Username non valido (min 3).";
 
-            // avatar: se selezionato, togli messaggio
-            if (t.name === "avatarId") {
-                const errEl = document.querySelector(`[data-error-for="avatarId"]`);
-                if (errEl) {
-                    errEl.hidden = true;
-                    errEl.textContent = "";
-                }
-            }
-        });
+        if (!password) fieldErrors["login-password"] = "Password obbligatoria.";
+        else if (password.length < 6) fieldErrors["login-password"] = "Password troppo corta (min 6).";
 
-        form.addEventListener("blur", (e) => {
-            const t = e.target;
-            if (!(t instanceof HTMLInputElement)) return;
-
-            // blur = valida "hard" campo
-            if (t.name === "username") setFieldError(t, validateUsername(t));
-            if (t.name === "email") setFieldError(t, validateEmail(t));
-            if (t.name === "password") setFieldError(t, validatePassword(t));
-        }, true);
+        return fieldErrors;
     }
 
-    // ---------- Submit handlers ----------
-    function setupSubmit(formId) {
-        const form = $("#" + formId);
-        if (!form) return;
+    function validateRegister({ username, email, password, avatarId }) {
+        const fieldErrors = {};
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+        if (!username?.trim()) fieldErrors["reg-username"] = "Username obbligatorio.";
+        else if (!USERNAME_RE.test(username.trim())) fieldErrors["reg-username"] = "Username non valido (min 3, max 50).";
 
-            const card = form.closest(".auth-card") || form;
-            const alertEl = $(".auth-alert", card);
+        if (!email?.trim()) fieldErrors["reg-email"] = "Email obbligatoria.";
+        else if (!EMAIL_RE.test(email.trim())) fieldErrors["reg-email"] = "Email non valida.";
 
-            clearFormErrors(form);
+        if (!password) fieldErrors["reg-password"] = "Password obbligatoria.";
+        else if (password.length < 6) fieldErrors["reg-password"] = "Password troppo corta (min 6).";
 
-            const ok = validateForm(form);
-            if (!ok) {
-                setAlert(alertEl, { type: "error", message: "Controlla i campi evidenziati." });
+        if (!avatarId) {
+            // nel tuo HTML l’errore avatar è data-error-for="avatarId"
+            fieldErrors["avatarId"] = "Seleziona un avatar.";
+        }
+
+        return fieldErrors;
+    }
+
+    function applyFieldErrors(fieldErrors) {
+        // fieldErrors qui è una mappa: { "login-username": "...", "avatarId": "..." }
+        for (const key in fieldErrors) {
+            setFieldErrorById(key, fieldErrors[key]);
+        }
+    }
+
+    // ---------------- Submit: LOGIN via API ----------------
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const card = form.closest(".auth-card") || form;
+        const alertEl = $(".auth-alert", card);
+
+        clearFormErrors(form);
+
+        const username = $("#login-username")?.value ?? "";
+        const password = $("#login-password")?.value ?? "";
+
+        // validazione client-side
+        const fe = validateLogin({ username, password });
+        if (Object.keys(fe).length) {
+            applyFieldErrors(fe);
+            setAlert(alertEl, { type: "error", message: "Controlla i campi evidenziati." });
+            return;
+        }
+
+        try {
+            setAlert(alertEl, { type: "info", message: "Accesso in corso..." });
+
+            await api.post("/auth/login", { username: username.trim(), password });
+
+            // Se login OK, puoi verificare /auth/me oppure redirect diretto
+            setAlert(alertEl, { type: "success", message: "Login OK ✅" });
+
+            // redirect (coerente con UI)
+            window.location.href = "/play.html";
+        } catch (err) {
+            // ApiError dal wrapper
+            if (err?.name === "ApiError") {
+                // mapping fieldErrors backend -> UI
+                // Il backend manda fieldErrors con chiavi tipo "username"?
+                // Noi le convertiamo ai tuoi id input.
+                const be = err.fieldErrors || null;
+
+                if (be && typeof be === "object") {
+                    // mapping backend-field -> input-id
+                    const map = {
+                        username: "login-username",
+                        password: "login-password",
+                    };
+                    const mapped = {};
+                    for (const k in be) mapped[map[k] || k] = be[k];
+                    applyFieldErrors(mapped);
+                }
+
+                setAlert(alertEl, { type: "error", message: err.message || "Login fallito." });
                 return;
             }
 
-            // Dati pronti
-            const data = Object.fromEntries(new FormData(form).entries());
-
-            // Normalizza: trim su username/email
-            if (data.username) data.username = String(data.username).trim();
-            if (data.email) data.email = String(data.email).trim().toLowerCase();
-
-            // TODO: qui colleghi il backend
-            // Esempio:
-            // - login: POST /api/auth/login  (username, password)
-            // - register: POST /api/auth/register (username, email, password, avatarId)
-            //
-            // setAlert(alertEl, { type: "info", message: "Invio dati..." });
-
-            console.log(`[${formId}] payload`, data);
-
-            // Demo UX:
-            setAlert(alertEl, { type: "success", message: "Validazione OK ✅ (TODO: chiamata backend)" });
-        });
+            setAlert(alertEl, { type: "error", message: "Errore di rete o server." });
+        }
     }
 
-    // ---------- Init ----------
+    // ---------------- Submit: REGISTER via API ----------------
+    async function handleRegisterSubmit(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const card = form.closest(".auth-card") || form;
+        const alertEl = $(".auth-alert", card);
+
+        clearFormErrors(form);
+
+        const username = $("#reg-username")?.value ?? "";
+        const email = $("#reg-email")?.value ?? "";
+        const password = $("#reg-password")?.value ?? "";
+        const avatarId = form.querySelector('input[name="avatarId"]:checked')?.value ?? null;
+
+        // validazione client-side
+        const fe = validateRegister({ username, email, password, avatarId });
+        if (Object.keys(fe).length) {
+            applyFieldErrors(fe);
+            setAlert(alertEl, { type: "error", message: "Controlla i campi evidenziati." });
+            return;
+        }
+
+        try {
+            setAlert(alertEl, { type: "info", message: "Creazione account..." });
+
+            await api.post("/auth/register", {
+                username: username.trim(),
+                email: email.trim().toLowerCase(),
+                password,
+                avatarId: Number(avatarId),
+            });
+
+            setAlert(alertEl, { type: "success", message: "Registrazione OK ✅ Ora puoi accedere." });
+
+            // Dopo register: switch a login
+            $("#show-login")?.click();
+            $("#login-username").value = username.trim();
+            $("#login-password")?.focus();
+
+        } catch (err) {
+            if (err?.name === "ApiError") {
+                const be = err.fieldErrors || null;
+
+                if (be && typeof be === "object") {
+                    const map = {
+                        username: "reg-username",
+                        email: "reg-email",
+                        password: "reg-password",
+                        avatarId: "avatarId",
+                    };
+                    const mapped = {};
+                    for (const k in be) mapped[map[k] || k] = be[k];
+                    applyFieldErrors(mapped);
+                }
+
+                setAlert(alertEl, { type: "error", message: err.message || "Registrazione fallita." });
+                return;
+            }
+
+            setAlert(alertEl, { type: "error", message: "Errore di rete o server." });
+        }
+    }
+
+    // ---------------- Init ----------------
     document.addEventListener("DOMContentLoaded", () => {
+        // toggle password
         setupPasswordToggle("#toggle-password", "#login-password");
         setupPasswordToggle("#toggle-reg-password", "#reg-password");
 
+        // switch
         setupAuthSwitch();
 
-        setupRealtimeValidation($("#login-form"));
-        setupRealtimeValidation($("#register-form"));
-
-        setupSubmit("login-form");
-        setupSubmit("register-form");
+        // submit
+        $("#login-form")?.addEventListener("submit", handleLoginSubmit);
+        $("#register-form")?.addEventListener("submit", handleRegisterSubmit);
     });
 })();

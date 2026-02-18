@@ -20,15 +20,18 @@ function rememberFocus() {
 }
 
 function restoreFocus() {
-    // torna su un elemento sensato (es. bottone X o card)
     (lastFocusedEl && document.contains(lastFocusedEl) ? lastFocusedEl : btnClose)?.focus?.();
 }
 
 /* ---------------- OVERLAY ---------------- */
 function openOverlay(gameId) {
+    rememberFocus();                 // ✅ salva dove eri (card cliccata)
     currentGame = gameId;
+
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
+
+    btnClose?.focus?.();             // ✅ focus dentro dialog
 
     // Avvia gioco scelto
     if (gameId === "flappy") {
@@ -37,45 +40,33 @@ function openOverlay(gameId) {
 }
 
 function closeOverlay() {
-    // tolgo il focus da dentro overlay (es. bottone X)
     if (overlay.contains(document.activeElement)) {
         document.activeElement.blur();
     }
 
-    // stop game
     window.Flappy?.stop?.();
 
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
 
-    // rimetto focus su qualcosa fuori (es. prima card)
-    const firstCard = document.querySelector(".game-card:not([disabled])");
-    firstCard?.focus();
-
+    restoreFocus();                  // ✅ torna alla card giusta
     currentGame = null;
 }
-
 
 /* ---------------- MODAL ---------------- */
 function openExitModal() {
     rememberFocus();
     exitModal.classList.add("is-open");
     exitModal.setAttribute("aria-hidden", "false");
-    btnExitCancel.focus(); // focus iniziale dentro modal
+    btnExitCancel.focus();
 }
 
 function closeExitModal() {
-    // 1) togli focus da dentro
     document.activeElement?.blur?.();
-
-    // 2) nascondi
     exitModal.classList.remove("is-open");
     exitModal.setAttribute("aria-hidden", "true");
-
-    // 3) ripristina focus fuori
     restoreFocus();
 }
-
 
 function confirmExit() {
     closeExitModal();
@@ -88,7 +79,6 @@ cards.forEach((btn) => {
         const gameId = btn.dataset.game;
         if (!gameId || btn.disabled) return;
 
-        // Se mobile portrait → chiedi landscape
         if (isMobilePortrait()) {
             openRotateOverlay(gameId);
             return;
@@ -98,19 +88,19 @@ cards.forEach((btn) => {
     });
 });
 
+btnClose.addEventListener("click", openExitModal);
 
-btnClose.addEventListener("click", () => {
-    openExitModal();
-});
-
-// ESC: se overlay aperto → apri modal
+// ✅ ESC fix: non chiudere subito dopo aver aperto
 window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.classList.contains("is-open")) {
-        openExitModal();
-    }
-    // ESC quando il modal è aperto → chiude il modal
-    if (e.key === "Escape" && exitModal.classList.contains("is-open")) {
+    if (e.key !== "Escape") return;
+
+    if (exitModal.classList.contains("is-open")) {
         closeExitModal();
+        return;
+    }
+
+    if (overlay.classList.contains("is-open")) {
+        openExitModal();
     }
 });
 
@@ -123,9 +113,7 @@ exitModal.addEventListener("click", (e) => {
     if (e.target?.dataset?.close === "true") closeExitModal();
 });
 
-
 function isMobilePortrait() {
-    // “mobile-ish”: puoi tararlo come vuoi
     const isSmall = window.matchMedia("(max-width: 900px)").matches;
     const isPortrait = window.matchMedia("(orientation: portrait)").matches;
     return isSmall && isPortrait;
@@ -149,27 +137,40 @@ function closeRotateOverlay() {
     restoreFocus();
 }
 
-
 function tryStartPendingGame() {
     if (!pendingGameId) return;
+    if (isMobilePortrait()) return;
 
-    if (isMobilePortrait()) {
-        // ancora portrait → resta nel rotate overlay
-        return;
-    }
-    // ok: landscape → chiudi overlay e avvia gioco
     const gameId = pendingGameId;
     closeRotateOverlay();
     openOverlay(gameId);
 }
 
-// Bottoni nel rotate overlay
 btnRotateCheck.addEventListener("click", tryStartPendingGame);
+btnRotateBack.addEventListener("click", closeRotateOverlay);
 
-btnRotateBack.addEventListener("click", () => {
-    closeRotateOverlay();
-});
-
-// Auto-check quando ruoti davvero il telefono
 window.addEventListener("orientationchange", tryStartPendingGame);
 window.addEventListener("resize", tryStartPendingGame);
+
+/* =========================================================
+   SCORE SUBMIT (guest vs logged)
+   - Non blocca il gioco se non sei loggato
+   - Se loggato: POST /api/game/score
+   - Da chiamare da flappy.js quando la run finisce
+========================================================= */
+window.submitScore = async function submitScore(score) {
+    try {
+        if (!window.api) return; // api.js non caricato
+        const me = await api.me();
+        if (!me) return; // guest: non inviamo nulla
+
+        // payload minimal (adatta ai vostri DTO)
+        await api.post("/api/game/score", {
+            game: currentGame || "flappy",
+            score: Number(score) || 0,
+        });
+    } catch (err) {
+        // non blocchiamo il gioco per errori di rete
+        console.warn("Score non inviato:", err);
+    }
+};

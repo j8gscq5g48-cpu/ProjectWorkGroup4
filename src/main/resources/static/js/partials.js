@@ -108,8 +108,39 @@ function hideHeroAuthLinkIfPresent() {
 
     // check login state e aggiorna UI
     const me = await getMe();
+    setNavVisibility(!!me);
+
     if (me) {
         setLogoutLink();
         hideHeroAuthLinkIfPresent();
     }
+
 })();
+
+function setNavVisibility(isLogged) {
+    const liClassifica = document.querySelector("li.top-li.classifica");
+    const liProfilo = document.querySelector("li.top-li.profilo");
+
+    // helper hide/show accessibile
+    const hide = (el) => {
+        if (!el) return;
+        el.hidden = true;
+        el.setAttribute("aria-hidden", "true");
+        el.querySelectorAll("a,button").forEach(x => x.setAttribute("tabindex", "-1"));
+    };
+
+    const show = (el) => {
+        if (!el) return;
+        el.hidden = false;
+        el.removeAttribute("aria-hidden");
+        el.querySelectorAll("a,button").forEach(x => x.removeAttribute("tabindex"));
+    };
+
+    if (isLogged) {
+        show(liClassifica);
+        show(liProfilo);
+    } else {
+        hide(liClassifica);
+        hide(liProfilo);
+    }
+}

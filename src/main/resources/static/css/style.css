@@ -146,6 +146,18 @@ a:hover {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+
+    overflow-x: hidden;
+}
+
+
+.layout>main {
+    min-width: 0;
+}
+
+.layout>main>* {
+    min-width: 0;
 }
 
 /* Spazio sotto header fisso (default per tutte le pagine)

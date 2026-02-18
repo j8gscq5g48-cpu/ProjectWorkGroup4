@@ -1,25 +1,29 @@
 /* =========================================================
    guard.js - Protezione pagine (UX)
-   - usa api.me() (ritorna null se 401)
+   - usa api.me() (ritorna null se 401/403)
    - se non loggato: redirect a /auth.html
-   - salva redirect target per tornare alla pagina dopo login
 ========================================================= */
 
-async function requireAuth({ redirectTo = "/auth.html", remember = true } = {}) {
-    // api deve essere già caricato (api.js)
-    const me = await api.me();
-
-    if (me) return me; // loggato 
-
-    if (remember) {
-        // salva pagina corrente (path + query + hash)
-        const target = window.location.pathname + window.location.search + window.location.hash;
-        sessionStorage.setItem("postLoginRedirect", target);
+async function requireAuth() {
+    try {
+        const me = await api.me(); // chiama /auth/me
+        if (!me) {
+            window.location.replace("/auth.html");
+            return null;
+        }
+        return me;
+    } catch (err) {
+        if (err?.name === "ApiError" && (err.status === 401 || err.status === 403)) {
+            window.location.replace("/auth.html");
+            return null;
+        }
+        console.error(err);
+        return null;
     }
-
-    window.location.href = redirectTo;
-    return null;
 }
 
-// esponi global per semplicità (no moduli)
+// esponi global (per usarla anche in altri script)
 window.requireAuth = requireAuth;
+
+// auto-run quando includi guard.js nella pagina protetta
+requireAuth();

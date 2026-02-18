@@ -32,42 +32,50 @@
         return document.querySelector(`[data-error-for="${inputId}"]`);
     }
 
-    function setFieldErrorById(inputId, message = "") {
-        const err = fieldErrorElById(inputId);
-        const inp = document.getElementById(inputId);
+    function setFieldErrorById(inputId, message) {
+        // 1) testo sotto campo
+        const p = document.querySelector(`[data-error-for="${inputId}"]`);
+        if (p) {
+            p.textContent = message;
+            p.hidden = false;
+        }
 
-        if (err) {
-            if (!message) {
-                err.hidden = true;
-                err.textContent = "";
-            } else {
-                err.hidden = false;
-                err.textContent = message;
+        // 2) evidenzia input (se esiste)
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.classList.add("is-invalid");
+            input.setAttribute("aria-invalid", "true");
+            return;
+        }
+
+        // 3) caso speciale: avatarId (radio) → evidenzia il fieldset
+        if (inputId === "avatarId") {
+            const fs = document.querySelector('#register-form fieldset[aria-describedby="avatar-help"]');
+            if (fs) {
+                fs.classList.add("is-invalid");
+                fs.setAttribute("aria-invalid", "true");
             }
         }
-
-        if (inp) {
-            if (!message) inp.removeAttribute("aria-invalid");
-            else inp.setAttribute("aria-invalid", "true");
-        }
     }
+
 
     function clearFormErrors(form) {
-        if (!form) return;
-
-        // pulisci tutti i data-error-for presenti nel form
-        form.querySelectorAll("[data-error-for]").forEach((el) => {
-            el.hidden = true;
-            el.textContent = "";
+        form.querySelectorAll(".form-error").forEach(p => {
+            p.textContent = "";
+            p.hidden = true;
         });
 
-        // reset aria-invalid su input
-        form.querySelectorAll("input").forEach((inp) => inp.removeAttribute("aria-invalid"));
+        form.querySelectorAll(".form-input").forEach(inp => {
+            inp.classList.remove("is-invalid");
+            inp.removeAttribute("aria-invalid");
+        });
 
-        // reset alert globale della card
-        const card = form.closest(".auth-card") || form;
-        setAlert($(".auth-alert", card), { message: "" });
+        form.querySelectorAll("fieldset.is-invalid").forEach(fs => {
+            fs.classList.remove("is-invalid");
+            fs.removeAttribute("aria-invalid");
+        });
     }
+
 
     // ---------------- Toggle password ----------------
     function setupPasswordToggle(btnSelector, inputSelector) {

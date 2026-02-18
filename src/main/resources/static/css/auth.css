@@ -4,6 +4,33 @@
    - Coerente con tema scuro ArcadeHub (variabili già definite in :root)
 ========================================================= */
 
+:root {
+    --colore-errore: #ff4d4d;
+    --superficie-errore: rgba(255, 77, 77, 0.10);
+    --bordo-errore: rgba(255, 77, 77, 0.55);
+}
+
+/* testo errore sotto campo */
+.form-error {
+    margin-top: 0.6rem;
+    font-size: var(--fs-small);
+    color: var(--colore-errore);
+}
+
+/* input evidenziato */
+.form-input.is-invalid {
+    border-color: var(--bordo-errore);
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.18);
+}
+
+/* alert globale (solo fallback) */
+.auth-alert.is-error {
+    border: 1px solid var(--bordo-errore);
+    background: var(--superficie-errore);
+    color: var(--colore-errore);
+}
+
+
 /* Contenitore main: centra e gestisce header fisso */
 .main-login {
     min-height: calc(100vh - var(--header-h));

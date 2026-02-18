@@ -229,16 +229,27 @@
 
         clearFormErrors(form);
 
+        // helper: nasconde alert (così gli errori restano sotto i campi)
+        const hideAlert = () => {
+            if (!alertEl) return;
+            alertEl.hidden = true;
+            alertEl.textContent = "";
+            alertEl.classList.remove("is-error", "is-success", "is-info");
+        };
+
         const username = $("#reg-username")?.value ?? "";
         const email = $("#reg-email")?.value ?? "";
         const password = $("#reg-password")?.value ?? "";
         const avatarId = form.querySelector('input[name="avatarId"]:checked')?.value ?? null;
 
-        // validazione client-side
+        // ✅ validazione client-side: errori SOLO sotto campo (niente alert in alto)
         const fe = validateRegister({ username, email, password, avatarId });
         if (Object.keys(fe).length) {
             applyFieldErrors(fe);
-            setAlert(alertEl, { type: "error", message: "Controlla i campi evidenziati." });
+            hideAlert();
+            // opzionale: focus primo campo invalido
+            const first = Object.keys(fe)[0];
+            document.getElementById(first)?.focus?.();
             return;
         }
 
@@ -246,7 +257,7 @@
             setAlert(alertEl, { type: "info", message: "Creazione account..." });
 
             await api.post("/auth/register", {
-                username: username.trim(),
+                username: username.trim().toLowerCase(),
                 email: email.trim().toLowerCase(),
                 password,
                 avatarId: Number(avatarId),
@@ -256,14 +267,15 @@
 
             // Dopo register: switch a login
             $("#show-login")?.click();
-            $("#login-username").value = username.trim();
-            $("#login-password")?.focus();
+            $("#login-username") && ($("#login-username").value = username.trim().toLowerCase());
+            $("#login-password")?.focus?.();
 
         } catch (err) {
+            // ✅ errori backend "di campo" → sotto campo, NON in alto
             if (err?.name === "ApiError") {
+                // 1) VALIDATION_ERROR (fieldErrors)
                 const be = err.fieldErrors || null;
-
-                if (be && typeof be === "object") {
+                if (be && typeof be === "object" && Object.keys(be).length) {
                     const map = {
                         username: "reg-username",
                         email: "reg-email",
@@ -273,15 +285,33 @@
                     const mapped = {};
                     for (const k in be) mapped[map[k] || k] = be[k];
                     applyFieldErrors(mapped);
+                    hideAlert();
+                    return;
+                }
+                // 2) CONFLICT senza fieldErrors (es: USERNAME_TAKEN / EMAIL_TAKEN)
+                if (err.code === "USERNAME_TAKEN") {
+                    applyFieldErrors({ "reg-username": err.message || "Username già in uso" });
+                    // niente alert in alto
+                    alertEl.hidden = true;
+                    return;
+                }
+                if (err.code === "EMAIL_TAKEN") {
+                    applyFieldErrors({ "reg-email": err.message || "Email già in uso" });
+                    alertEl.hidden = true;
+                    return;
                 }
 
+                // fallback: errore globale
                 setAlert(alertEl, { type: "error", message: err.message || "Registrazione fallita." });
                 return;
+
             }
 
+            // rete/server
             setAlert(alertEl, { type: "error", message: "Errore di rete o server." });
         }
     }
+
 
     // ---------------- Init ----------------
     document.addEventListener("DOMContentLoaded", () => {

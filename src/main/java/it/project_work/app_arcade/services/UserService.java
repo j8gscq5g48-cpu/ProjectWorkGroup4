@@ -55,7 +55,10 @@ public class UserService extends GenericService<Long, User, UserRepository> {
     }
 
     @Transactional
-    public MeResponse updateUsername(Long userId, String newUsername) {
+    public MeResponse updateUsername(String username, String newUsername) {
+        Long userId = getRepository().findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"))
+                .getId();
         User user = getRepository().findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         if (getRepository().existsByUsername(newUsername)) {
@@ -70,19 +73,22 @@ public class UserService extends GenericService<Long, User, UserRepository> {
     }
 
     @Transactional
-    public MeResponse updatePassword(Long userId, String oldPassword, String newPassword) {
-        User user = getRepository().findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
-        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
-            throw new IllegalArgumentException("Password errata");
-        }
-        user.setPasswordHash(passwordEncoder.encode(newPassword));
-        List<UserGameProgress> progress = progressRepository.findByUserId(userId);
-        return MeResponse.fromEntity(getRepository().save(user), progress.stream()
-                .filter(p -> p.getGameCode().equals("flappy"))
-                .findFirst()
-                .orElse(null));
+        public void changePasswordByUsername(String username, ChangePasswordRequest dto) {
+    User user = getRepository().findByUsername(username)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utente non trovato"));
+
+    if (!dto.newPassword().equals(dto.newPasswordConfirm())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nuove password non coincidono");
     }
+
+    // esempio: user.getPasswordHash() / user.setPasswordHash(...)
+    if (!passwordEncoder.matches(dto.oldPassword(), user.getPasswordHash())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password attuale non corretta");
+    }
+
+    user.setPasswordHash(passwordEncoder.encode(dto.newPassword()));
+    getRepository().save(user);
+}
 
 
 

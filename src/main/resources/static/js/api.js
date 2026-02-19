@@ -14,6 +14,10 @@ const api = (() => {
     // Richiesta utente corrente (come da specifica)
     const ME_PATH = "/auth/me";
 
+    // PROFILO (protetto da sessione)
+    const PROFILE_ME_PATH = "/api/profile/me";
+    const PROFILE_AVATAR_PATH = "/api/profile/me/avatar";
+
     /**
      * Errore API standard.
      * - status: HTTP status
@@ -114,6 +118,13 @@ const api = (() => {
     const get = (path, opts) => request(path, { ...opts, method: "GET" });
     const post = (path, body, opts) => request(path, { ...opts, method: "POST", body });
     const put = (path, body, opts) => request(path, { ...opts, method: "PUT", body });
+    function unwrapData(payload) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+            return payload.data ?? null;
+        }
+        return payload;
+    }
+
 
     // -------------------- API methods --------------------
     /**
@@ -146,6 +157,30 @@ const api = (() => {
         return json;
     }
 
+    async function profileMe() {
+        try {
+            const payload = await get(PROFILE_ME_PATH, {
+                headers: { "Accept": "application/json" },
+                cache: "no-store",
+            });
+            return unwrapData(payload);
+        } catch (err) {
+            if (err?.name === "ApiError" && (err.status === 401 || err.status === 403)) {
+                return null;
+            }
+            throw err;
+        }
+    }
+
+    async function updateMyAvatar(avatarId) {
+        // endpoint: PUT /api/profile/me/avatar?avatarId=...
+        const qs = new URLSearchParams({ avatarId: String(avatarId) }).toString();
+        const payload = await request(`${PROFILE_AVATAR_PATH}?${qs}`, {
+            method: "PUT",
+            headers: { "Accept": "application/json" },
+        });
+        return unwrapData(payload);
+    }
 
     return {
         // methods
@@ -153,6 +188,8 @@ const api = (() => {
         post,
         put,
         me,
+        profileMe,
+        updateMyAvatar,
 
         // error class (utile per auth.js / UI)
         ApiError,

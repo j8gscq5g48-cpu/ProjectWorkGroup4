@@ -1,6 +1,7 @@
 package it.project_work.app_arcade.services;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,13 @@ public class LeaderboardService extends GenericService<Long, UserGameProgress, P
         List<LeaderboardResponse> responses =new ArrayList<>();
         for (User user : users) {
             responses.add(new LeaderboardResponse(user.getUsername(), getTotScoreUser(user.getId()), user.getLevel()));
+        }
+        // Ordinamento decrescente per totalScore
+        responses.sort(Comparator.comparing(LeaderboardResponse::bestScore).reversed());
+        
+        // Se vuoi limitare i risultati (es. top N)
+        if (limit > 0 && limit < responses.size()) {
+            responses = responses.subList(0, limit);
         }
         return responses;
     }

@@ -2,11 +2,11 @@ package it.project_work.app_arcade.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import it.project_work.app_arcade.dto.MeResponse;
-import it.project_work.app_arcade.dto.UserResponse;
 import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.AvatarRepository;
@@ -16,37 +16,54 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UserService extends GenericService<Long, User, UserRepository> {
+
     private final AvatarRepository avatarRepository;
 
     private final ProgressRepository progressRepository;
-    
-    public UserService(AvatarRepository avatarRepository, 
-                       ProgressRepository progressRepository) {
+
+    public UserService(AvatarRepository avatarRepository,
+            ProgressRepository progressRepository) {
         this.avatarRepository = avatarRepository;
         this.progressRepository = progressRepository;
     }
 
     public MeResponse me(Long userId) {
         User user = getRepository().findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         List<UserGameProgress> progress = progressRepository.findByUserId(userId);
         return MeResponse.fromEntity(user, progress.stream()
-            .filter(p -> p.getGameCode().equals("flappy"))
-            .findFirst()
-            .orElse(null));
+                .filter(p -> p.getGameCode().equals("flappy"))
+                .findFirst()
+                .orElse(null));
     }
-
 
     @Transactional
     public MeResponse updateAvatar(Long userId, Long avatarId) {
         User user = getRepository().findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         user.setSelectedAvatar(avatarRepository.findById(avatarId)
-            .orElseThrow(() -> new IllegalArgumentException("Avatar non trovato")));
+                .orElseThrow(() -> new IllegalArgumentException("Avatar non trovato")));
         List<UserGameProgress> progress = progressRepository.findByUserId(userId);
         return MeResponse.fromEntity(getRepository().save(user), progress.stream()
-            .filter(p -> p.getGameCode().equals("flappy"))
-            .findFirst()
-            .orElse(null));
+                .filter(p -> p.getGameCode().equals("flappy"))
+                .findFirst()
+                .orElse(null));
+    }
+
+    public MeResponse meByUsername(String username) {
+        Long userId = getRepository().findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))
+                .getId();
+
+        return me(userId);
+    }
+
+    @Transactional
+    public MeResponse updateAvatarByUsername(String username, Long avatarId) {
+        Long userId = getRepository().findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"))
+                .getId();
+
+        return updateAvatar(userId, avatarId);
     }
 }

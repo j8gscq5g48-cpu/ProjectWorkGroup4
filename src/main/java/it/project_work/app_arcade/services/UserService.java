@@ -121,4 +121,11 @@ public class UserService extends GenericService<Long, User, UserRepository> {
 
         return MeResponse.fromEntity(saved, flappy);
     }
+
+    @Transactional
+    public void deleteUser(String username) {
+        User user = getRepository().findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        getRepository().delete(user);
+    }
 }

@@ -266,6 +266,8 @@ let spawnInterval;
 let tubi = [];
 let punteggio = 0;
 
+let scoreSent = false; // ✅ evita invii multipli
+
 // inizializzo player DOPO resize
 let player = new Player(
   Math.round(getCanvasW() / 5),
@@ -287,6 +289,7 @@ function resetGame() {
   clearInterval(spawnInterval);
   tubi = [];
   punteggio = 0;
+  scoreSent = false; // ✅ nuova run, nuovo invio
 
   player.x = Math.round(getCanvasW() / 5);
   player.y = getCanvasH() / 2;
@@ -303,7 +306,7 @@ function resetGame() {
 //======================== INPUT ===============================
 function onKeyPress(e) {
   if (!window.__flappyRunning) return;
-  if (e.key !== "w") return;
+  if ((e.key || "").toLowerCase() !== "w") return;
   handleJumpAction();
 }
 
@@ -410,7 +413,14 @@ function animate() {
       safePlay(hitSound);
       clearInterval(spawnInterval);
       gameState = "gameover";
+
+      // ✅ invio punteggio una sola volta
+      if (!scoreSent) {
+        scoreSent = true;
+        window.submitScore?.(punteggio);
+      }
     }
+
 
     // punteggio (passaggio oltre tubo)
     tubi.forEach(tubo => {

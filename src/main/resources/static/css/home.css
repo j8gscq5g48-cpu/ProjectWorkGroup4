@@ -3,10 +3,12 @@
    Dipende dalle variabili in :root di style.css
 ========================================================= */
 
-/* Token locali HOME (coerenza e fine tuning) */
-:root {
-  --home-sky-1: rgba(249, 220, 53, 0.18);  /* giallo soft */
-  --home-sky-2: rgba(254, 152, 0, 0.14);   /* arancio soft */
+/* Token locali HOME (scoped) */
+.main-home {
+  --home-sky-1: rgba(249, 220, 53, 0.18);
+  /* giallo soft */
+  --home-sky-2: rgba(254, 152, 0, 0.14);
+  /* arancio soft */
   --home-grass-1: rgba(138, 192, 72, 0.20);
   --home-grass-2: rgba(75, 174, 78, 0.18);
 
@@ -20,27 +22,33 @@
   --home-pad: clamp(1.6rem, 2.6vw, 3.2rem);
 }
 
-/* Sfondo HOME: “cielo” sopra e “prato” sotto */
+/* =========================================================
+   FIX: header fisso → la home deve scendere sotto l'header
+========================================================= */
 .main-home {
   width: 100%;
   max-width: var(--container);
   margin-inline: auto;
 
+  /* evita che l'hero finisca sotto l'header su mobile */
+  padding-top: calc(var(--header-h) + env(safe-area-inset-top) + var(--home-pad));
+  padding-left: var(--home-pad);
+  padding-right: var(--home-pad);
+  padding-bottom: var(--home-pad);
+
   display: grid;
   gap: var(--home-gap);
 
-  /* leggibilità: un po' più luce nel main rispetto al resto */
   background:
     radial-gradient(900px 520px at 20% 0%, var(--home-sky-1), transparent 58%),
     radial-gradient(800px 520px at 85% 10%, var(--home-sky-2), transparent 60%),
     radial-gradient(900px 450px at 50% 105%, var(--home-grass-1), transparent 55%),
     radial-gradient(900px 450px at 50% 115%, var(--home-grass-2), transparent 60%);
   border-radius: clamp(1.6rem, 3vw, 2.4rem);
-  padding: var(--home-pad);
 }
 
-/* Sezioni: effetto “card arcade” coerente */
-.main-home > section {
+/* Sezioni: effetto “card arcade” */
+.main-home>section {
   background: linear-gradient(180deg, var(--home-card-strong), var(--home-card));
   border: 1px solid var(--home-border);
   border-radius: clamp(1.4rem, 2.4vw, 2rem);
@@ -49,15 +57,18 @@
   backdrop-filter: blur(10px);
 }
 
+/* Header sezione: spacing consistente */
+.main-home>section>header {
+  margin-bottom: clamp(1.2rem, 1.8vw, 2rem);
+}
+
 /* Titoli */
 .hero-header h1 {
   margin: 0 0 0.8rem;
   font-size: clamp(3.0rem, 3vw + 1.4rem, 4.6rem);
   letter-spacing: 0.3px;
-
-  /* glow leggero stile arcade */
   text-shadow:
-    0 2px 0 rgba(0,0,1,0.7),
+    0 2px 0 rgba(0, 0, 1, 0.7),
     0 0 22px rgba(249, 220, 53, 0.18);
 }
 
@@ -66,72 +77,57 @@
 .leaderboard-preview p {
   max-width: 62ch;
   color: rgba(255, 255, 254, 0.90);
-  margin-bottom: clamp(1.2rem, 1.8vw, 2rem);
+  margin: 0;
+  /* gestito dal margin del header sopra */
 }
 
-/* HERO: un po’ più “hero” */
+/* HERO: vibe arcade */
 .hero {
   position: relative;
   overflow: hidden;
 }
 
-/* barra decorativa verticale (palette) tipo “pipelines” */
+/* barre decorative “pipelines” */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-
   background:
     linear-gradient(90deg,
-      rgba(249,220,53,0.10) 0 12%,
-      rgba(255,255,254,0.06) 12% 18%,
-      rgba(254,152,0,0.10) 18% 30%,
-      rgba(138,192,72,0.10) 30% 44%,
-      rgba(75,174,78,0.10) 44% 58%,
-      rgba(82,138,44,0.10) 58% 72%,
+      rgba(249, 220, 53, 0.10) 0 12%,
+      rgba(255, 255, 254, 0.06) 12% 18%,
+      rgba(254, 152, 0, 0.10) 18% 30%,
+      rgba(138, 192, 72, 0.10) 30% 44%,
+      rgba(75, 174, 78, 0.10) 44% 58%,
+      rgba(82, 138, 44, 0.10) 58% 72%,
       transparent 72% 100%);
   mask-image: radial-gradient(600px 300px at 15% 25%, black 40%, transparent 70%);
   opacity: 0.8;
 }
 
-/* Bottoni in hero: primario giallo + secondario outline */
+/* =========================================================
+   BOTTONI HOME: ora sono .btn globali → qui solo “fine tuning”
+========================================================= */
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: clamp(1.0rem, 1.5vw, 1.4rem);
-  margin-top: clamp(1.0rem, 1.8vw, 1.8rem);
+  margin-top: clamp(1.2rem, 1.8vw, 2rem);
 }
 
-.hero-actions a {
+/* look “pill” solo nella hero */
+.main-home .hero-actions .btn {
   border-radius: 999px;
-  padding: 1.1rem 1.7rem;
-  font-weight: 900;
-  border: 1px solid rgba(255, 255, 254, 0.18);
-  background: rgba(255, 255, 254, 0.08);
-  color: var(--colore-testo);
-  box-shadow: 0 10px 22px rgba(0,0,1,0.35);
+  box-shadow: 0 10px 22px rgba(0, 0, 1, 0.35);
 }
 
-.hero-actions a:first-child {
-  background: rgba(249, 220, 53, 0.92);
-  border-color: rgba(249, 220, 53, 0.95);
-  color: #000001;
+/* CTA sotto tabella: lascia normale (non forziamo pill) */
+.leaderboard-preview>p {
+  margin-top: clamp(1.2rem, 1.8vw, 2rem);
 }
 
-.hero-actions a:hover {
-  transform: translateY(-1px);
-  background: rgba(254, 152, 0, 0.16);
-  border-color: rgba(254, 152, 0, 0.50);
-}
-
-.hero-actions a:first-child:hover {
-  background: rgba(254, 152, 0, 0.92);
-  border-color: rgba(254, 152, 0, 0.95);
-  color: #000001;
-}
-
-/* HOW IT WORKS: lista più “chiara” */
+/* HOW IT WORKS */
 .how-it-works ol {
   margin: 0;
   padding-left: 2rem;
@@ -140,7 +136,7 @@
 }
 
 .how-it-works li {
-  padding: 0.8rem 1.0rem;
+  padding: 0.9rem 1.1rem;
   border-radius: 1.2rem;
   background: rgba(255, 255, 254, 0.06);
   border: 1px solid rgba(255, 255, 254, 0.10);
@@ -155,11 +151,10 @@
   background: rgba(0, 0, 1, 0.35);
 }
 
-/* tabella */
 .table-wrap table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 520px; /* evita schiacciamento brutto */
+  min-width: 520px;
 }
 
 .table-wrap th,
@@ -174,9 +169,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-
-  /* header tabella “arcade”: giallo -> arancio */
-  background: linear-gradient(90deg, rgba(249,220,53,0.92), rgba(254,152,0,0.88));
+  background: linear-gradient(90deg, rgba(249, 220, 53, 0.92), rgba(254, 152, 0, 0.88));
   color: #000001;
   font-weight: 900;
   letter-spacing: 0.2px;
@@ -190,41 +183,23 @@
   background: rgba(138, 192, 72, 0.12);
 }
 
-/* colonna # più compatta */
 .table-wrap th:first-child,
 .table-wrap td:first-child {
   width: 56px;
 }
 
-/* Link “Vedi classifica completa” più visibile */
-.leaderboard-preview > p a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-
-  margin-top: 1.2rem;
-  padding: 1.0rem 1.4rem;
-  border-radius: 999px;
-
-  background: rgba(249, 220, 53, 0.14);
-  border: 1px solid rgba(249, 220, 53, 0.35);
-  color: var(--colore-testo);
-  font-weight: 800;
-}
-
-.leaderboard-preview > p a:hover {
-  background: rgba(254, 152, 0, 0.16);
-  border-color: rgba(254, 152, 0, 0.50);
-}
-
-/* ============ Responsive upgrade (senza rompere mobile-first) ============ */
+/* ============ Responsive upgrade ============ */
 @media (min-width: 768px) {
   .main-home {
-    padding: clamp(2.4rem, 3vw, 3.8rem);
+    padding-top: calc(var(--header-h) + env(safe-area-inset-top) + clamp(2.4rem, 3vw, 3.8rem));
+    padding-left: clamp(2.4rem, 3vw, 3.8rem);
+    padding-right: clamp(2.4rem, 3vw, 3.8rem);
+    padding-bottom: clamp(2.4rem, 3vw, 3.8rem);
   }
 
-  .hero-actions a {
+  .main-home .hero-actions .btn {
     padding: 1.2rem 2.0rem;
+    /* override leggero, ma resta globale */
   }
 }
 

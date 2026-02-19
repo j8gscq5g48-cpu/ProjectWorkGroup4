@@ -1,6 +1,6 @@
 /* =========================================================
    ArcadeHub - style.css (COMUNE) | Mobile First
-   Tema palette (da immagine):
+   Palette:
    - nero:     #000001
    - giallo:   #F9DC35
    - bianco:   #FFFFFE
@@ -14,7 +14,9 @@
 :root {
     /* Tipografia base */
     font-size: 62.5%;
-    /* 1rem = 10px (comodo per i calcoli) */
+    /* 1rem = 10px */
+
+    color-scheme: dark;
 
     /* Colori */
     --colore-sfondo: #000001;
@@ -26,10 +28,11 @@
     /* arancio */
     --colore-successo: #8AC048;
     /* verde chiaro */
+
     --colore-link: #F9DC35;
     --colore-link-hover: #FE9800;
 
-    /* Superfici (card/box) - trasparenze leggere su nero */
+    /* Superfici */
     --superficie-1: rgba(255, 255, 254, 0.06);
     --superficie-2: rgba(255, 255, 254, 0.10);
     --bordo-1: rgba(255, 255, 254, 0.14);
@@ -37,7 +40,7 @@
     /* Ombre */
     --ombra-1: 0 10px 30px rgba(0, 0, 1, 0.55);
 
-    /* Spaziature (clamp per respirare su schermi diversi) */
+    /* Spaziature */
     --sp-1: clamp(0.8rem, 1.2vw, 1.2rem);
     --sp-2: clamp(1.2rem, 1.8vw, 1.8rem);
     --sp-3: clamp(1.6rem, 2.2vw, 2.4rem);
@@ -50,7 +53,7 @@
     /* Header fisso */
     --header-h: 64px;
 
-    /* Font sizes (clamp) */
+    /* Font sizes */
     --fs-body: clamp(1.5rem, 0.6vw + 1.3rem, 1.7rem);
     --fs-h1: clamp(2.6rem, 2.5vw + 1.6rem, 4.2rem);
     --fs-h2: clamp(2.0rem, 1.4vw + 1.5rem, 2.6rem);
@@ -74,12 +77,22 @@ body {
     font-size: var(--fs-body);
     line-height: 1.55;
     color: var(--colore-testo);
-    background: radial-gradient(1200px 600px at 20% 0%, rgba(249, 220, 53, 0.10), transparent 55%),
+    background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(249, 220, 53, 0.10), transparent 55%),
         radial-gradient(900px 500px at 90% 10%, rgba(254, 152, 0, 0.10), transparent 60%),
         var(--colore-sfondo);
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+}
+
+/* Form elements coerenti */
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
 }
 
 /* Immagini responsive */
@@ -90,6 +103,7 @@ svg {
     display: block;
 }
 
+/* Link base (testuali) */
 a {
     color: var(--colore-link);
     text-decoration: none;
@@ -116,18 +130,40 @@ a:hover {
 :focus-visible {
     outline: 3px solid rgba(249, 220, 53, 0.85);
     outline-offset: 3px;
-    border-radius: 10px;
+}
+
+/* ============ Utilities ============ */
+.container {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+}
+
+.full-bleed {
+    max-width: none !important;
 }
 
 /* ============ Layout comune ============ */
-/* Mantiene footer sempre in fondo anche con pagine vuote */
 .layout {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+
+    overflow-x: hidden;
 }
 
-/* Spazio sotto l’header fisso */
+
+.layout>main {
+    min-width: 0;
+}
+
+.layout>main>* {
+    min-width: 0;
+}
+
+/* Spazio sotto header fisso (default per tutte le pagine)
+   NB: pagine speciali (home, game, profile) possono sovrascrivere in css dedicato */
 main {
     flex: 1;
     padding-top: calc(var(--header-h) + var(--sp-3));
@@ -135,14 +171,17 @@ main {
     width: 100%;
 }
 
-/* Container opzionale (allineare contenuti) */
+/* Center automatico dei contenuti */
 main>* {
+    width: 100%;
     max-width: var(--container);
     margin-inline: auto;
 }
 
 /* ============ Header (fisso sempre in alto) ============ */
-.header {
+/* Alias: .header / .site-header (così non dipendete dal nome esatto nel partial) */
+.header,
+.site-header {
     position: fixed;
     top: 0;
     left: 0;
@@ -156,13 +195,14 @@ main>* {
     box-shadow: var(--ombra-1);
 }
 
+/* Alias nav: .top-menu */
 .top-menu {
     height: 100%;
     display: flex;
     align-items: center;
 }
 
-/* UL: orizzontale + scorrimento su mobile (menu lungo) */
+/* UL: orizzontale + scroll su mobile */
 .top-ul-menu {
     list-style: none;
     margin: 0;
@@ -176,15 +216,16 @@ main>* {
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
-    /* Firefox */
 }
 
 .top-ul-menu::-webkit-scrollbar {
     display: none;
-    /* Chrome */
 }
 
-.top-li a {
+/* Link menu: supporto a più naming (.top-li / .top-li-menu / .top-link-menu) */
+.top-li a,
+.top-li-menu a,
+.top-link-menu {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -203,13 +244,17 @@ main>* {
     transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 
-.top-li a:hover {
+.top-li a:hover,
+.top-li-menu a:hover,
+.top-link-menu:hover {
     transform: translateY(-1px);
     background: rgba(249, 220, 53, 0.14);
     border-color: rgba(249, 220, 53, 0.35);
 }
 
-.top-li a[aria-current="page"] {
+.top-li a[aria-current="page"],
+.top-li-menu a[aria-current="page"],
+.top-link-menu[aria-current="page"] {
     background: rgba(249, 220, 53, 0.20);
     border-color: rgba(249, 220, 53, 0.60);
     color: var(--colore-testo);
@@ -218,8 +263,6 @@ main>* {
 /* ============ Footer (sempre in fondo) ============ */
 .footer {
     margin-top: auto;
-    /* chiave per “sticky footer” con flex column */
-
     padding: var(--sp-4) var(--sp-3);
     border-top: 1px solid var(--bordo-1);
     background: rgba(0, 0, 1, 0.55);
@@ -228,7 +271,6 @@ main>* {
 .footer section {
     max-width: var(--container);
     margin-inline: auto;
-
     background: var(--superficie-1);
     border: 1px solid var(--bordo-1);
     border-radius: var(--radius);
@@ -288,34 +330,68 @@ p {
     box-shadow: var(--ombra-1);
 }
 
-.btn,
-.hero-actions a {
+/* ==========================
+   BOTTONI GLOBALI
+   (Home e altre pagine usano class="btn ...")
+========================== */
+.btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     gap: 0.8rem;
-    padding: 1.1rem 1.6rem;
 
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 254, 0.18);
-    background: rgba(255, 255, 254, 0.06);
+    padding: 1.1rem 1.4rem;
+    border-radius: 14px;
+    /* default “app” */
+    border: 1px solid transparent;
 
-    color: var(--colore-testo);
     font-weight: 800;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.01em;
+    cursor: pointer;
 
-    transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+    transition: transform 140ms ease, filter 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 
-.btn:hover,
-.hero-actions a:hover {
+a.btn {
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn:hover {
     transform: translateY(-1px);
-    background: rgba(254, 152, 0, 0.14);
-    border-color: rgba(254, 152, 0, 0.45);
 }
 
-/* ============ Media query (solo migliorie, sempre mobile-first) ============ */
+.btn:focus-visible {
+    outline: 2px solid var(--colore-primario);
+    outline-offset: 3px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--colore-primario), var(--colore-accento));
+    color: #000001;
+    border-color: rgba(0, 0, 1, 0.20);
+}
+
+.btn-ghost {
+    background: var(--superficie-1);
+    color: var(--colore-testo);
+    border-color: var(--bordo-1);
+}
+
+.btn-danger {
+    background: rgba(254, 152, 0, 0.12);
+    color: var(--colore-testo);
+    border-color: rgba(254, 152, 0, 0.55);
+}
+
+.btn[disabled],
+button[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============ Media query (migliorie, sempre mobile-first) ============ */
 @media (min-width: 768px) {
     :root {
         --header-h: 72px;
@@ -337,7 +413,48 @@ p {
 }
 
 @media (min-width: 1024px) {
-    .top-li a {
+
+    .top-li a,
+    .top-li-menu a,
+    .top-link-menu {
         padding: 1.0rem 1.6rem;
     }
+}
+
+/* ==========================
+   FIX AUTOFILL (Chrome/Edge/Safari)
+   Mantiene lo stile scuro sugli input quando il browser compila i campi
+========================== */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--colore-testo) !important;
+    caret-color: var(--colore-testo);
+
+    /* “vernice” interna per coprire il bianco dell’autofill */
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 254, 0.06) inset !important;
+    box-shadow: 0 0 0 1000px rgba(255, 255, 254, 0.06) inset !important;
+
+    border: 1px solid rgba(255, 255, 254, 0.14) !important;
+    background-clip: padding-box !important;
+
+    /* evita flash di background giallo/bianco */
+    transition: background-color 9999s ease-out 0s, color 9999s ease-out 0s;
+}
+
+/* ==========================
+   Firefox (supporto moderno)
+========================== */
+input:autofill,
+textarea:autofill,
+select:autofill {
+    box-shadow: 0 0 0 1000px var(--field-bg) inset !important;
+    color: var(--colore-testo) !important;
+    border: 1px solid var(--field-border) !important;
 }

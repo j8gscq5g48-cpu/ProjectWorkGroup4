@@ -7,49 +7,303 @@
 
     <!-- SEO base -->
     <title>ArcadeHub - Profilo</title>
-    <meta name="description" content="ArcadeHub: un’app di intrattenimento che offre giochi 2D divertenti." />
+    <meta name="description" content="ArcadeHub: profilo utente, avatar, progressi e impostazioni account." />
     <meta name="author" content="Zuhir, Gilda, Yuchen, Marco" />
     <meta name="robots" content="index, follow" />
 
-    <!-- Social preview (OK anche se poi li aggiornate) -->
+    <!-- Social preview -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ArcadeHub" />
-    <meta property="og:title" content="ArcadeHub - Home" />
-    <meta property="og:description" content="Giochi 2D e quiz: entra in ArcadeHub e gioca subito." />
-    <!-- TODO: inserire URL assoluto quando avete dominio -->
-    <!-- <meta property="og:url" content="https://example.com/index.html" /> -->
-    <!-- TODO: inserire immagine social quando pronta -->
-    <!-- <meta property="og:image" content="https://example.com/assets/og/arcadehub.png" /> -->
+    <meta property="og:title" content="ArcadeHub - Profilo" />
+    <meta property="og:description" content="Gestisci il tuo profilo, avatar e progressi su ArcadeHub." />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ArcadeHub - Home" />
-    <meta name="twitter:description" content="Giochi 2D e quiz: entra in ArcadeHub e gioca subito." />
-    <!-- <meta name="twitter:image" content="https://example.com/assets/og/arcadehub.png" /> -->
+    <meta name="twitter:title" content="ArcadeHub - Profilo" />
+    <meta name="twitter:description" content="Gestisci il tuo profilo, avatar e progressi su ArcadeHub." />
 
-    <!-- PWA/Icons (placeholder, aggiungete quando pronti) -->
-    <!-- <link rel="icon" href="./assets/favicon.ico" /> -->
-    <!-- <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" /> -->
-    <!-- <link rel="manifest" href="./site.webmanifest" /> -->
     <meta name="theme-color" content="#000000" />
 
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/profile.css" />
+
+    <script src="/js/api.js" defer></script>
+    <script src="/js/guard.js" defer></script>
+    <script src="/js/profile.js" defer></script>
 </head>
 
 <body>
+    <!-- Skip link (accessibilità) -->
+    <a class="skip-link sr-only" href="#main">Vai al contenuto principale</a>
+
     <div class="layout">
         <div id="site-header"></div>
 
-        <main class="main-profilo">
+        <main id="main" class="main-profilo" aria-labelledby="profile-title">
+            <header class="page-header">
+                <div class="page-header__left">
+                    <h1 id="profile-title" class="page-title">Profilo</h1>
+                    <p class="page-subtitle">La tua carta di identità ArcadeHub 👾</p>
+                </div>
 
+                <!-- Pulsante impostazioni (ingranaggio) -->
+                <div class="page-header__right">
+                    <button id="btn-settings" class="icon-btn" type="button" aria-haspopup="dialog"
+                        aria-controls="settings-modal" aria-label="Apri impostazioni account">
+                        <!-- Inline SVG (niente librerie) -->
+                        <svg class="icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"
+                            focusable="false">
+                            <path
+                                d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2-1.55a.5.5,0,0,0,.12-.63l-1.9-3.29a.5.5,0,0,0-.6-.22l-2.35,1a7.2,7.2,0,0,0-1.63-.94l-.36-2.5A.5.5,0,0,0,12.9,1H9.1a.5.5,0,0,0-.49.42L8.25,3.92a7.2,7.2,0,0,0-1.63.94l-2.35-1a.5.5,0,0,0-.6.22L1.77,7.37a.5.5,0,0,0,.12.63l2,1.55a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94l-2,1.55a.5.5,0,0,0-.12.63l1.9,3.29a.5.5,0,0,0,.6.22l2.35-1a7.2,7.2,0,0,0,1.63.94l.36,2.5A.5.5,0,0,0,9.1,23h3.8a.5.5,0,0,0,.49-.42l.36-2.5a7.2,7.2,0,0,0,1.63-.94l2.35,1a.5.5,0,0,0,.6-.22l1.9-3.29a.5.5,0,0,0-.12-.63ZM11,15.5A3.5,3.5,0,1,1,14.5,12,3.5,3.5,0,0,1,11,15.5Z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Stato pagina (JS: loading / error) -->
+            <section class="status" aria-live="polite">
+                <div id="profile-loading" class="status__loading" hidden>
+                    <p>Caricamento profilo…</p>
+                </div>
+                <div id="profile-error" class="status__error" hidden role="alert">
+                    <p id="profile-error-text">Errore nel caricamento del profilo.</p>
+                </div>
+            </section>
+
+            <!-- Layout contenuti profilo -->
+            <section class="profile-grid" aria-label="Dati profilo e progressi">
+                <!-- CARD: Carta identità -->
+                <article class="card profile-card" aria-label="Carta di identità">
+                    <header class="card__header">
+                        <h2 class="card__title">Carta di identità</h2>
+                        <p class="card__subtitle">Avatar, username, livello e data account</p>
+                    </header>
+
+                    <div class="card__body profile-card__body">
+                        <div class="profile-id">
+                            <figure class="profile-id__avatar">
+                                <!-- JS: src + alt + data-avatar-id -->
+                                <img id="profile-avatar" src="#" alt="Avatar utente"
+                                    width="112" height="112" />
+                            </figure>
+
+                            <div class="profile-id__meta">
+                                <div class="profile-id__row">
+                                    <span class="label">Username</span>
+                                    <strong id="profile-username" class="value">—</strong>
+                                </div>
+
+                                <div class="profile-id__row">
+                                    <span class="label">Livello</span>
+                                    <strong id="profile-level" class="value">—</strong>
+                                </div>
+
+                                <div class="profile-id__row">
+                                    <span class="label">Email</span>
+                                    <span id="profile-email" class="value muted">—</span>
+                                </div>
+
+                                <div class="profile-id__row">
+                                    <span class="label">Account creato</span>
+                                    <time id="profile-createdAt" class="value muted" datetime="">—</time>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions">
+                            <button id="btn-open-avatar" class="btn btn-primary" type="button" aria-haspopup="dialog"
+                                aria-controls="avatar-modal">
+                                Cambia avatar
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- CARD: Progressi / Score -->
+                <article class="card progress-card" aria-label="Progressi e punteggi">
+                    <header class="card__header">
+                        <h2 class="card__title">Progressi</h2>
+                        <p class="card__subtitle">Scegli un gioco e vedi record e ultima run</p>
+                    </header>
+
+                    <div class="card__body">
+                        <div class="form-row">
+                            <label class="label" for="game-select">Gioco</label>
+                            <select id="game-select" class="select" name="game">
+                                <!-- JS: popola da API se serve -->
+                                <option value="FLAPPY" selected>Flappy</option>
+                            </select>
+                        </div>
+
+                        <div class="scores">
+                            <div class="score-box">
+                                <span class="label">Best score</span>
+                                <strong id="best-score" class="score">—</strong>
+                            </div>
+
+                            <div class="score-box">
+                                <span class="label">Last score</span>
+                                <strong id="last-score" class="score">—</strong>
+                            </div>
+                        </div>
+
+                        <div class="muted small">
+                            <span>Tip:</span> il livello dipende dal tuo record migliore.
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- MODALE: Avatar picker -->
+            <dialog id="avatar-modal" class="modal" aria-labelledby="avatar-modal-title">
+                <form method="dialog" class="modal__content">
+                    <header class="modal__header">
+                        <h2 id="avatar-modal-title" class="modal__title">Seleziona un avatar</h2>
+                        <button class="icon-btn" value="cancel" aria-label="Chiudi modale avatar" type="submit">
+                            ✕
+                        </button>
+                    </header>
+
+                    <div class="modal__body">
+                        <p class="muted">
+                            Gli avatar bloccati mostrano il livello richiesto. Seleziona un avatar sbloccato e poi
+                            salva.
+                        </p>
+
+                        <!-- JS: render grid -->
+                        <div id="avatar-grid" class="avatar-grid" role="list" aria-label="Griglia avatar disponibili">
+                            <!-- Esempio item (JS creerà i veri)
+              <button class="avatar-item" type="button" role="listitem" data-avatar-id="1" aria-pressed="false">
+                <img src="/assets/avatars/a1.png" alt="Avatar 1">
+                <span class="avatar-badge">Lvl 1</span>
+              </button>
+              <button class="avatar-item is-locked" type="button" role="listitem" data-avatar-id="9" disabled>
+                <img src="/assets/avatars/a9.png" alt="Avatar 9">
+                <span class="avatar-badge">Lvl 10</span>
+              </button>
+              -->
+                        </div>
+
+                        <div id="avatar-modal-hint" class="hint muted" aria-live="polite"></div>
+                    </div>
+
+                    <footer class="modal__footer">
+                        <button id="btn-avatar-cancel" class="btn btn-ghost" value="cancel"
+                            type="submit">Annulla</button>
+
+                        <!-- JS: abilita quando scelto -->
+                        <button id="btn-avatar-save" class="btn btn-primary" value="default" type="button" disabled>
+                            Salva avatar
+                        </button>
+                    </footer>
+                </form>
+            </dialog>
+
+            <!-- MODALE: Impostazioni -->
+            <dialog id="settings-modal" class="modal" aria-labelledby="settings-modal-title">
+                <form method="dialog" class="modal__content">
+                    <header class="modal__header">
+                        <h2 id="settings-modal-title" class="modal__title">Impostazioni account</h2>
+                        <button class="icon-btn" value="cancel" aria-label="Chiudi impostazioni"
+                            type="submit">✕</button>
+                    </header>
+
+                    <div class="modal__body">
+                        <section class="settings-section" aria-label="Azioni account">
+                            <!-- Cambio username -->
+                            <details class="settings-item">
+                                <summary class="settings-item__summary">Cambia username</summary>
+                                <div class="settings-item__content">
+                                    <label class="label" for="new-username">Nuovo username</label>
+                                    <input id="new-username" class="input" type="text" name="newUsername"
+                                        autocomplete="username" placeholder="Es. ArcadeZuhir" />
+                                    <p class="muted small" id="username-help">Usa 3–20 caratteri, niente spazi strani.
+                                    </p>
+
+                                    <div class="settings-actions">
+                                        <button id="btn-change-username" class="btn btn-primary" type="button">
+                                            Salva username
+                                        </button>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Cambio password -->
+                            <details class="settings-item">
+                                <summary class="settings-item__summary">Cambia password</summary>
+                                <div class="settings-item__content">
+                                    <label class="label" for="old-password">Password attuale</label>
+                                    <input id="old-password" class="input" type="password" name="oldPassword"
+                                        autocomplete="current-password" />
+
+                                    <label class="label" for="new-password">Nuova password</label>
+                                    <input id="new-password" class="input" type="password" name="newPassword"
+                                        autocomplete="new-password" />
+
+                                    <label class="label" for="new-password-2">Conferma nuova password</label>
+                                    <input id="new-password-2" class="input" type="password" name="newPasswordConfirm"
+                                        autocomplete="new-password" />
+
+                                    <div class="settings-actions">
+                                        <button id="btn-change-password" class="btn btn-primary" type="button">
+                                            Salva password
+                                        </button>
+                                    </div>
+                                </div>
+                            </details>
+
+                            <!-- Logout -->
+                            <div class="settings-item settings-item--action">
+                                <div class="settings-item__row">
+                                    <div>
+                                        <p class="settings-item__title">Logout</p>
+                                        <p class="muted small">Esci dall’account su questo dispositivo.</p>
+                                    </div>
+                                    <button id="btn-logout" class="btn btn-ghost" type="button">Logout</button>
+                                </div>
+                            </div>
+
+                            <!-- Elimina account -->
+                            <details class="settings-item settings-item--danger">
+                                <summary class="settings-item__summary">Elimina account</summary>
+                                <div class="settings-item__content">
+                                    <p class="muted">
+                                        Azione irreversibile: perderai progressi e dati del profilo.
+                                    </p>
+
+                                    <label class="label" for="delete-confirm">
+                                        Scrivi <strong>ELIMINA</strong> per confermare
+                                    </label>
+                                    <input id="delete-confirm" class="input" type="text" name="deleteConfirm"
+                                        placeholder="ELIMINA" />
+
+                                    <div class="settings-actions">
+                                        <button id="btn-delete-account" class="btn btn-danger" type="button" disabled>
+                                            Elimina definitivamente
+                                        </button>
+                                    </div>
+                                </div>
+                            </details>
+                        </section>
+
+                        <div id="settings-feedback" class="hint" aria-live="polite"></div>
+                    </div>
+
+                    <footer class="modal__footer">
+                        <button class="btn btn-primary" value="default" type="submit">Chiudi</button>
+                    </footer>
+                </form>
+            </dialog>
+
+            <!-- Toast/Banner area (JS: messaggi globali) -->
+            <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
         </main>
 
         <div id="site-footer"></div>
     </div>
 
-    <!-- Accessibilità: helper class da definire poi in CSS -->
-    <!--
-    .sr-only { ... }
-  -->
+    <!-- Partials header/footer -->
     <script src="/js/partials.js"></script>
-
 </body>
+
+</html>

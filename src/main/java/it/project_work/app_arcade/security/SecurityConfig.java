@@ -1,57 +1,56 @@
 package it.project_work.app_arcade.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import it.project_work.app_arcade.services.CustomUserDetailsService;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // fetch + session cookie, senza CSRF token
                 .csrf(csrf -> csrf.disable())
+                // se FE e BE sono su origin diverse serve poi CorsConfigurationSource
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                // pagine pubbliche
+                // Pagine HTML pubbliche: così il guard.js può gestire redirect UX
                 .requestMatchers(
                         "/",
                         "/index.html",
                         "/play.html",
                         "/auth.html",
+                        "/leaderboard.html",
+                        "/profile.html",
+                        // assets statici
                         "/css/**",
                         "/js/**",
                         "/assets/**",
                         "/images/**",
                         "/partials/**",
-                        "/audio/**",
-                        "/favicon.ico"
+                        "/audio/**"
                 ).permitAll()
-                // API pubbliche 
+                // AUTH API pubbliche (così /auth/me non fa 403 "brutto" da Security)
+                .requestMatchers("/auth/login", "/auth/register", "/auth/me", "/auth/logout").permitAll()
+                // API pubbliche
                 .requestMatchers("/api/leaderboard").permitAll()
-                // API che richiedono login
+                // API protette (qui si applica la vera sicurezza)
                 .requestMatchers("/api/game/score").authenticated()
-                .requestMatchers("/api/profile/").authenticated()
+                .requestMatchers("/api/profile/**").authenticated()
                 // tutto il resto autenticato
-                .anyRequest().authenticated())
-                .formLogin(form -> form
-                .loginPage("/auth.html")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/play.html", true)
-                .permitAll())
-                .logout(logout -> logout
-                .logoutSuccessUrl("/")
-                .permitAll());
+                .anyRequest().authenticated()
+                )
+                // login JSON custom, quindi niente formLogin
+                .formLogin(form -> form.disable())
+                // logout gestito dal controller
+                .logout(logout -> logout.disable());
 
         return http.build();
     }

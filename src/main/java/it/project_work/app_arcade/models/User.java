@@ -1,21 +1,35 @@
 package it.project_work.app_arcade.models;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(
-    name = "users",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
-        @UniqueConstraint(name = "uk_users_username", columnNames = "username")
-    }
+        name = "users",
+        uniqueConstraints = {
+            @UniqueConstraint(name = "uk_users_email", columnNames = "email"),
+            @UniqueConstraint(name = "uk_users_username", columnNames = "username")
+        }
 )
 @Getter
 @Setter
@@ -28,15 +42,15 @@ public class User {
         USER, ADMIN
     }
 
+    /* In JPA l’identità “vera” dell’entità è l’id. Prima del persist id è null, dopo diventa valorizzato → devi gestire questa cosa in modo prevedibile. */
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
 
     @Column(nullable = false, length = 50)
     private String username;
 
-    @EqualsAndHashCode.Include
     @Column(nullable = false, length = 255)
     private String email;
 
@@ -47,16 +61,18 @@ public class User {
     @Column(nullable = false, length = 10)
     private Role role;
 
+    // Boolean può essere null → anche se il DB è NOT NULL, nel codice puoi finire con null e ti esplode in runtime.
+    // Con boolean eviti null e semplifichi tutta la logica.
     @Column(nullable = false)
-    private Boolean enabled = true;
+    private boolean enabled = true;
 
     @Column(nullable = false)
     private Integer level = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-        name = "selected_avatar_id",
-        foreignKey = @ForeignKey(name = "fk_users_selected_avatar")
+            name = "selected_avatar_id",
+            foreignKey = @ForeignKey(name = "fk_users_selected_avatar")
     )
     private Avatar selectedAvatar;
 
@@ -76,7 +92,5 @@ public class User {
     void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-    
+
 }
-
-

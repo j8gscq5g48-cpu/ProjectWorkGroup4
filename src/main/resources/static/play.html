@@ -14,7 +14,7 @@
     <!-- Social preview (OK anche se poi li aggiornate) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ArcadeHub" />
-    <meta property="og:title" content="ArcadeHub - Home" />
+    <meta property="og:title" content="ArcadeHub - Games" />
     <meta property="og:description" content="Giochi 2D e quiz: entra in ArcadeHub e gioca subito." />
     <!-- TODO: inserire URL assoluto quando avete dominio -->
     <!-- <meta property="og:url" content="https://example.com/index.html" /> -->
@@ -22,7 +22,7 @@
     <!-- <meta property="og:image" content="https://example.com/assets/og/arcadehub.png" /> -->
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ArcadeHub - Home" />
+    <meta name="twitter:title" content="ArcadeHub - Games" />
     <meta name="twitter:description" content="Giochi 2D e quiz: entra in ArcadeHub e gioca subito." />
     <!-- <meta name="twitter:image" content="https://example.com/assets/og/arcadehub.png" /> -->
 
@@ -60,8 +60,9 @@
                     </button>
 
                     <!-- Placeholder card per futuri giochi -->
-                    <button class="game-card" type="button" data-game="soon" disabled>
-                        <img src="/images/coming-soon.png" alt="" />
+                    <button class="game-card" type="button" data-game="soon" disabled aria-label="Gioco in arrivo">
+                        <!-- /images/coming-soon.png -->
+                        <img src="" alt="" />
                         <div class="game-card-body">
                             <h2>Coming soon</h2>
                             <p>Nuovi giochi in arrivo.</p>
@@ -109,11 +110,15 @@
             </div>
 
         </main>
+
+        <div id="site-footer"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"
         integrity="sha512-eP6ippJojIKXKO8EPLtsUMS+/sAGHGo1UN/38swqZa1ypfcD4I0V/ac5G3VzaHfDaklFmQLEs51lhkkVaqg60Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="/js/api.js"></script>
     <script src="/js/game/flappy.js"></script>
     <script src="/js/partials.js"></script>
     <script src="/js/play.js"></script>

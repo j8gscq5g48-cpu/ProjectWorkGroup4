@@ -182,6 +182,14 @@ const api = (() => {
         return unwrapData(payload);
     }
 
+    async function changeMyPassword(oldPassword, newPassword, newPasswordConfirm) {
+        return request("/api/profile/me/password", {
+            method: "PUT",
+            body: { oldPassword, newPassword, newPasswordConfirm },
+            headers: { "Accept": "application/json" }
+        });
+    }
+
     return {
         // methods
         get,
@@ -190,6 +198,7 @@ const api = (() => {
         me,
         profileMe,
         updateMyAvatar,
+        changeMyPassword,
 
         // error class (utile per auth.js / UI)
         ApiError,

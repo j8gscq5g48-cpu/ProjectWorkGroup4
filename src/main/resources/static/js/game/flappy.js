@@ -22,21 +22,17 @@ function getCanvasH() {
 }
 
 function resizeCanvas() {
-  const main = document.querySelector(".main-game");
-  if (!main) return;
-
-  const rect = main.getBoundingClientRect();
   const dpr = getDpr();
+  const rect = canvas.getBoundingClientRect();
 
-  // dimensioni REALI in pixel fisici
+  if (rect.width === 0 || rect.height === 0) return false;
+
   canvas.width = Math.max(1, Math.floor(rect.width * dpr));
   canvas.height = Math.max(1, Math.floor(rect.height * dpr));
 
-  // disegno in "pixel CSS"
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return true;
 }
-
-resizeCanvas();
 
 let SCALE = 1;
 
@@ -47,10 +43,8 @@ function recomputeScale() {
   const w = getCanvasW();
   const h = getCanvasH();
   SCALE = Math.min(w / BASE_W, h / BASE_H);
-  SCALE = Math.max(0.75, Math.min(1.15, SCALE));
+  SCALE = Math.min(SCALE, 1.15);
 }
-
-recomputeScale();
 
 
 // ======================== AUDIO ========================
@@ -168,25 +162,28 @@ class Player {
 class Tubo {
   constructor() {
     this.x = getCanvasW();
+
     this.width = Math.round(75 * SCALE);
-    this.height = getCanvasH();
     this.velocity = 5 * SCALE;
     this.passed = false;
-    this.spazio = Math.round(145 * SCALE);
 
-    const floorHeight = floorLoaded ? floor.height / 2 : 0;
-    const playableHeight = getCanvasH() - floorHeight;
+    // gap e margine: NON farli diventare microscopici su mobile
+    this.spazio = Math.round(Math.max(120, 145 * SCALE));
+    const margin = Math.round(Math.max(90, 100 * SCALE));
 
-    const margin = Math.round(100 * SCALE);
-    const min = -playableHeight + margin;
+    const floorH = getFloorH();
+    const playableH = getCanvasH() - floorH;
+
+    // i tubi devono fermarsi al "soffitto del pavimento"
+    this.height = playableH;
+
+    const min = -playableH + margin;
     const max = -this.spazio - margin;
-
     this.y = Math.random() * (max - min) + min;
 
     this.image = new Image();
     this.image.src = `${ASSET_BASE}images/pipe-green.png`;
   }
-
   draw() {
     if (!this.image.complete) return;
 
@@ -266,7 +263,7 @@ let spawnInterval;
 let tubi = [];
 let punteggio = 0;
 
-let scoreSent = false; // ✅ evita invii multipli
+let scoreSent = false; // evita invii multipli
 
 // inizializzo player DOPO resize
 let player = new Player(
@@ -289,7 +286,7 @@ function resetGame() {
   clearInterval(spawnInterval);
   tubi = [];
   punteggio = 0;
-  scoreSent = false; // ✅ nuova run, nuovo invio
+  scoreSent = false; //  nuova run, nuovo invio
 
   player.x = Math.round(getCanvasW() / 5);
   player.y = getCanvasH() / 2;
@@ -337,23 +334,46 @@ function unbindInputs() {
   canvas.removeEventListener("pointerdown", onPointerDown);
 }
 
-
-// resize handler
-window.addEventListener("resize", () => {
-  resizeCanvas();
-
-  // riposiziona player su resize (senza teletrasportarlo fuori)
-  player.x = Math.round(getCanvasW() / 5);
-  const floorH = floorLoaded ? floor.height / 2 : 0;
-  const maxY = getCanvasH() - floorH - player.radius;
-  if (player.y > maxY) player.y = getCanvasH() / 2;
+// ======================== RESIZE HANDLER (UNICO) ========================
+function handleResize() {
+  if (!window.__flappyRunning) return;
+  if (!resizeCanvas()) return;
 
   recomputeScale();
+
+  player.x = Math.round(getCanvasW() / 5);
 
   player.scale = 2 * SCALE;
   player.radius = 18 * SCALE;
   player.gravity = 0.5 * SCALE;
-});
+}
+
+function getFloorH() {
+  if (!floorLoaded) return 0;
+  // altezza reale del pavimento sopra il bordo inferiore
+  return Math.round((floor.height / 2) * SCALE);
+}
+
+window.addEventListener("resize", handleResize);
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", handleResize);
+}
+
+
+// resize mobile più affidabile (barra indirizzi / zoom / tastiera)
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", () => {
+    if (!window.__flappyRunning) return; // evita resize quando il gioco è chiuso
+    resizeCanvas();
+    recomputeScale();
+
+    // riallinea scale del player (stessi update che fai nel window.resize)
+    player.scale = 2 * SCALE;
+    player.radius = 18 * SCALE;
+    player.gravity = 0.5 * SCALE;
+  });
+}
 
 //======================== MAIN LOOP ===============================
 let animationId;
@@ -418,7 +438,7 @@ function animate() {
     });
 
     // collisione limiti (soffitto + pavimento)
-    const floorH = floorLoaded ? floor.height / 2 : 0;
+    const floorH = getFloorH();
     if (player.y - player.radius <= 0 || player.y + player.radius >= H - floorH) {
       triggerGameOver();
     }
@@ -471,13 +491,25 @@ window.Flappy = {
   start() {
     if (window.__flappyRunning) return;
     window.__flappyRunning = true;
+
     unlockAudio();
     bindInputs();
-    gameState = "start";
-    resetGame();
-    animate();
-  }
-  ,
+
+    // aspetta che l'overlay sia realmente visibile (layout pronto)
+    requestAnimationFrame(() => {
+      const ok = resizeCanvas();
+      if (ok) recomputeScale();
+
+      // riallinea parametri dipendenti da SCALE
+      player.scale = 2 * SCALE;
+      player.radius = 18 * SCALE;
+      player.gravity = 0.5 * SCALE;
+
+      gameState = "start";
+      resetGame();
+      animate();
+    });
+  },
   stop() {
     window.__flappyRunning = false;
 

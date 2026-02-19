@@ -168,10 +168,14 @@
 /* Canvas container: deve essere “stabile” e responsive */
 .game-stage canvas {
     width: 100%;
-    height: min(70vh, 520px);
+    height: auto;
+    aspect-ratio: 900 / 500;
+    /* BASE_W / BASE_H */
+    max-height: min(70dvh, 520px);
+    /* dvh > vh su mobile */
     display: block;
-
-    border-radius: 16px;
+    touch-action: none;
+    
     border: 1px solid rgba(255, 255, 254, 0.14);
     background: rgba(0, 0, 1, 0.35);
 }

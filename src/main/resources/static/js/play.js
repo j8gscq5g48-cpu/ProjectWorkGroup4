@@ -25,13 +25,13 @@ function restoreFocus() {
 
 /* ---------------- OVERLAY ---------------- */
 function openOverlay(gameId) {
-    rememberFocus();                 // ✅ salva dove eri (card cliccata)
+    rememberFocus();                 //  salva dove eri (card cliccata)
     currentGame = gameId;
 
     overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
 
-    btnClose?.focus?.();             // ✅ focus dentro dialog
+    btnClose?.focus?.();             //  focus dentro dialog
 
     // Avvia gioco scelto
     if (gameId === "flappy") {
@@ -49,7 +49,7 @@ function closeOverlay() {
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
 
-    restoreFocus();                  // ✅ torna alla card giusta
+    restoreFocus();                  // torna alla card giusta
     currentGame = null;
 }
 

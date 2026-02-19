@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import it.project_work.app_arcade.dto.ApiResponse;
 import it.project_work.app_arcade.dto.ChangePasswordRequest;
+import it.project_work.app_arcade.dto.ChangeUsernameRequest;
 import it.project_work.app_arcade.dto.MeResponse;
 import it.project_work.app_arcade.services.UserService;
 import jakarta.servlet.http.Cookie;
@@ -58,6 +59,26 @@ public class UserController {
         response.addCookie(jsid);
 
         return ResponseEntity.noContent().build(); // -> 204
+    }
+
+    @PutMapping("/me/username")
+    public ResponseEntity<Void> changeUsername(Authentication auth,
+            @Valid @RequestBody ChangeUsernameRequest dto,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        userService.changeUsernameByUsername(auth.getName(), dto.newUsername());
+
+        // logout “secure”
+        new SecurityContextLogoutHandler().logout(request, response, auth);
+
+        Cookie jsid = new Cookie("JSESSIONID", "");
+        jsid.setPath("/");
+        jsid.setMaxAge(0);
+        jsid.setHttpOnly(true);
+        response.addCookie(jsid);
+
+        return ResponseEntity.noContent().build(); // 204
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import it.project_work.app_arcade.dto.ChangePasswordRequest;
 import it.project_work.app_arcade.dto.MeResponse;
 import it.project_work.app_arcade.exceptions.BadRequestException;
+import it.project_work.app_arcade.exceptions.ConflictException;
 import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.AvatarRepository;
@@ -55,22 +56,23 @@ public class UserService extends GenericService<Long, User, UserRepository> {
     }
 
     @Transactional
-    public MeResponse updateUsername(String username, String newUsername) {
-        Long userId = getRepository().findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"))
-                .getId();
-        User user = getRepository().findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
-        if (getRepository().existsByUsername(newUsername)) {
-            throw new IllegalArgumentException("Username già utilizzato");
+    public void updateUsername(String currentUsername, String newUsername) {
+        User user = getRepository().findByUsername(currentUsername)
+                .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND", "Utente non trovato"));
+
+        String clean = newUsername != null ? newUsername.trim() : "";
+
+        if (clean.equalsIgnoreCase(user.getUsername())) {
+                throw new BadRequestException("USERNAME_SAME", "Stai già usando questo username");
         }
-        user.setUsername(newUsername);
-        List<UserGameProgress> progress = progressRepository.findByUserId(userId);
-        return MeResponse.fromEntity(getRepository().save(user), progress.stream()
-                .filter(p -> p.getGameCode().equals("flappy"))
-                .findFirst()
-                .orElse(null));
-    }
+
+        if (getRepository().existsByUsername(clean)) {
+                throw new ConflictException("USERNAME_TAKEN", "Username già in uso");
+        }
+
+        user.setUsername(clean);
+        getRepository().save(user);
+   }
 
     @Transactional
     public void updatePassword(String username, ChangePasswordRequest dto) {

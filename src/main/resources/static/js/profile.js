@@ -180,9 +180,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             await api.changeMyPassword(oldPassword, newPassword, newPasswordConfirm);
 
-            // session invalidata dal backend → relogin forzato
+            // feedback + redirect
+            if (feedback) feedback.textContent = "Password aggiornata ✅ Ti reindirizzo al login…";
+
             const next = encodeURIComponent("/profile.html");
-            window.location.replace(`/auth.html?next=${next}`);
+            setTimeout(() => {
+                window.location.replace(`/auth.html?next=${next}`);
+            }, 600);
         } catch (err) {
             console.error(err);
 

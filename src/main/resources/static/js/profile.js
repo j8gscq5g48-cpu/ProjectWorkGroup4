@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (feedback) feedback.textContent = "Username aggiornato ✅ Ti reindirizzo al login…";
 
-            const next = encodeURIComponent("/profile.html");
+            const next = encodeURIComponent("/index.html");
             setTimeout(() => {
                 window.location.replace(`/auth.html?next=${next}`);
             }, 600);
@@ -246,5 +246,4 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (feedback) feedback.textContent = err?.message || "Errore nel cambio username.";
         }
     });
-
 });

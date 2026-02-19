@@ -190,6 +190,14 @@ const api = (() => {
         });
     }
 
+    async function logout() {
+        // non serve body
+        return request("/auth/logout", {
+            method: "POST",
+            headers: { "Accept": "application/json" },
+        });
+    }
+
     return {
         // methods
         get,
@@ -199,6 +207,7 @@ const api = (() => {
         profileMe,
         updateMyAvatar,
         changeMyPassword,
+        logout,
 
         // error class (utile per auth.js / UI)
         ApiError,

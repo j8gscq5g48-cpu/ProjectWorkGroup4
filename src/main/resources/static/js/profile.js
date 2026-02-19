@@ -168,4 +168,32 @@ document.addEventListener("DOMContentLoaded", async () => {
         const fb = document.querySelector("#settings-feedback");
         if (fb) fb.textContent = "";
     });
+
+    document.querySelector("#btn-change-password")?.addEventListener("click", async () => {
+        const oldPassword = document.querySelector("#old-password")?.value ?? "";
+        const newPassword = document.querySelector("#new-password")?.value ?? "";
+        const newPasswordConfirm = document.querySelector("#new-password-2")?.value ?? "";
+        const feedback = document.querySelector("#settings-feedback");
+
+        if (feedback) feedback.textContent = "";
+
+        try {
+            await api.changeMyPassword(oldPassword, newPassword, newPasswordConfirm);
+
+            // session invalidata dal backend → relogin forzato
+            const next = encodeURIComponent("/profile.html");
+            window.location.replace(`/auth.html?next=${next}`);
+        } catch (err) {
+            console.error(err);
+
+            // VALIDATION_ERROR: mostra fieldErrors
+            if (err?.fieldErrors && feedback) {
+                const lines = Object.entries(err.fieldErrors).map(([k, v]) => `${k}: ${v}`);
+                feedback.textContent = lines.join(" | ");
+                return;
+            }
+
+            if (feedback) feedback.textContent = err?.message || "Errore nel cambio password.";
+        }
+    });
 });

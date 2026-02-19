@@ -1,6 +1,7 @@
 package it.project_work.app_arcade.controllers;
 
 import it.project_work.app_arcade.dto.LeaderboardResponse;
+import it.project_work.app_arcade.dto.LeaderboardResponseDto;
 import it.project_work.app_arcade.services.LeaderboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

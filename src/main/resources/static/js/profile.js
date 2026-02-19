@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         openDialog($settingsModal);
     });
 
-    // opzionale: chiusura “pulita” se vuoi reset UI quando chiude
+    // opzionale: chiusura  per reset UI quando chiude
     $settingsModal?.addEventListener("close", () => {
         // esempio: reset feedback
         const fb = document.querySelector("#settings-feedback");
@@ -200,4 +200,23 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (feedback) feedback.textContent = err?.message || "Errore nel cambio password.";
         }
     });
+
+    document.querySelector("#btn-logout")?.addEventListener("click", async () => {
+        const feedback = document.querySelector("#settings-feedback");
+        if (feedback) feedback.textContent = "Logout…";
+
+        try {
+            await api.logout();
+
+            // chiudi modale
+            closeDialog(document.querySelector("#settings-modal"));
+
+            // redirect alla home
+            window.location.replace("/index.html");
+        } catch (err) {
+            console.error(err);
+            if (feedback) feedback.textContent = err?.message || "Errore durante il logout.";
+        }
+    });
+
 });

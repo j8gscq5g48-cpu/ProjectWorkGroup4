@@ -217,5 +217,4 @@ document.addEventListener("DOMContentLoaded", async () => {
             btn.disabled = false;
         }
     });
-
 });

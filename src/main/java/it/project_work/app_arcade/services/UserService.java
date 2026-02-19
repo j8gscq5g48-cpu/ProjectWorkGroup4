@@ -2,13 +2,12 @@ package it.project_work.app_arcade.services;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import it.project_work.app_arcade.dto.ChangePasswordRequest;
 import it.project_work.app_arcade.dto.MeResponse;
+import it.project_work.app_arcade.exceptions.BadRequestException;
 import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.AvatarRepository;
@@ -76,15 +75,14 @@ public class UserService extends GenericService<Long, User, UserRepository> {
     @Transactional
     public void updatePassword(String username, ChangePasswordRequest dto) {
         User user = getRepository().findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utente non trovato"));
+                .orElseThrow(() -> new BadRequestException("USER_NOT_FOUND", "Utente non trovato"));
 
         if (!dto.newPassword().equals(dto.newPasswordConfirm())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Le nuove password non coincidono");
+            throw new BadRequestException("PASSWORD_MISMATCH", "Le nuove password non coincidono");
         }
 
-        // esempio: user.getPasswordHash() / user.setPasswordHash(...)
         if (!passwordEncoder.matches(dto.oldPassword(), user.getPasswordHash())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password attuale non corretta");
+            throw new BadRequestException("OLD_PASSWORD_WRONG", "Password attuale non corretta");
         }
 
         user.setPasswordHash(passwordEncoder.encode(dto.newPassword()));

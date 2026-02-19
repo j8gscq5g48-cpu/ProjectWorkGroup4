@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import it.project_work.app_arcade.dto.ChangePasswordRequest;
 import it.project_work.app_arcade.dto.MeResponse;
 import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
@@ -73,7 +74,7 @@ public class UserService extends GenericService<Long, User, UserRepository> {
     }
 
     @Transactional
-        public void changePasswordByUsername(String username, ChangePasswordRequest dto) {
+        public void updatePassword(String username, ChangePasswordRequest dto) {
     User user = getRepository().findByUsername(username)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utente non trovato"));
 

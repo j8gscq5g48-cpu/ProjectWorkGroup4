@@ -69,6 +69,9 @@ public class User {
     @Column(nullable = false)
     private Integer level = 1;
 
+    @Column(name = "xp_total", nullable = false)
+    private long xpTotal = 0L;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "selected_avatar_id",

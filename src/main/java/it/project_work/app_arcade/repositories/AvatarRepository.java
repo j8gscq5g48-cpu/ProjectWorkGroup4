@@ -10,5 +10,5 @@ import it.project_work.app_arcade.models.Avatar;
 @Repository
 public interface AvatarRepository extends JpaRepository<Avatar, Long> {
 
-    List<Avatar> findAllByActiveTrueOrderByRequiredLevelAsc();
+    List<Avatar> findByActiveTrueOrderByRequiredLevelAsc();
 }

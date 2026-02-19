@@ -7,6 +7,8 @@ import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.ProgressRepository;
 import it.project_work.app_arcade.repositories.UserRepository;
+import it.project_work.app_arcade.utilities.LevelInfo;
+import it.project_work.app_arcade.utilities.Leveling;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -24,7 +26,6 @@ public class ProgressService extends GenericService<Long, UserGameProgress, Prog
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
 
-        // standardizza il gameCode
         String code = gameCode.trim().toLowerCase();
 
         UserGameProgress progress = getRepository()
@@ -33,20 +34,35 @@ public class ProgressService extends GenericService<Long, UserGameProgress, Prog
                     UserGameProgress p = new UserGameProgress();
                     p.setUser(user);
                     p.setGameCode(code);
-                    // best/last/playedCount 0 di default, ok
                     return p;
                 });
 
-        progress.setLastScore(scoreRun);
+        int score = (scoreRun == null) ? 0 : Math.max(0, scoreRun);
+
+        progress.setLastScore(score);
         progress.setPlayedCount(progress.getPlayedCount() + 1);
 
-        if (scoreRun > progress.getBestScore()) {
-            progress.setBestScore(scoreRun);
+        if (score > progress.getBestScore()) {
+            progress.setBestScore(score);
         }
 
+        int oldLevel = (user.getLevel() == null) ? 1 : user.getLevel();
+        user.setXpTotal(user.getXpTotal() + score);
+
+        LevelInfo info = Leveling.fromTotalXp(user.getXpTotal());
+        user.setLevel(info.level());
+
         UserGameProgress saved = getRepository().save(progress);
+        userRepository.save(user);
 
-        return new ProgressResponse(saved.getBestScore(), saved.getLastScore());
+        return new ProgressResponse(
+                saved.getBestScore(),
+                saved.getLastScore(),
+                user.getXpTotal(),
+                user.getLevel(),
+                user.getLevel() > oldLevel,
+                info.xpIntoLevel(),
+                info.xpToNext()
+        );
     }
-
 }

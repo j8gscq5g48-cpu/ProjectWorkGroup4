@@ -2,6 +2,7 @@ package it.project_work.app_arcade.services;
 
 import org.springframework.stereotype.Service;
 
+import it.project_work.app_arcade.dto.ProgressResponse;
 import it.project_work.app_arcade.dto.SubmitScoreRequest;
 import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
@@ -44,6 +45,14 @@ public class ProgressService extends GenericService<Long, UserGameProgress, Prog
             progress.setBestScore(scoreRun);
         }
         return SubmitScoreRequest.fromEntity(getRepository().save(progress));
+    }
+
+    public ProgressResponse getGameProgress(String gamecode, String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        UserGameProgress progress = getRepository().findByUserIdAndGameCode(user.getId(), gamecode)
+                .orElseThrow(() -> new IllegalArgumentException("Progress non trovato"));
+        return new ProgressResponse(progress.getBestScore(), progress.getLastScore());
     }
 
     private boolean levelUp(User user, int score) {

@@ -1,11 +1,14 @@
 package it.project_work.app_arcade.services;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import it.project_work.app_arcade.dto.LeaderboardResponse;
+import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.ProgressRepository;
 import it.project_work.app_arcade.repositories.UserRepository;
@@ -18,14 +21,36 @@ public class LeaderboardService extends GenericService<Long, UserGameProgress, P
         this.userRepository = userRepository;
     }
 
-    public List<LeaderboardResponse> getTopScores(String gameCode, int limit) {
+    public List<LeaderboardResponse> topFlappy(int limit) {
+        return getTopScoresPerGame("flappy", limit);
+    }
+
+    public List<LeaderboardResponse> topTot(int limit) {
+        List<User> users = userRepository.findAll();
+        List<LeaderboardResponse> responses =new ArrayList<>();
+        for (User user : users) {
+            responses.add(new LeaderboardResponse(user.getUsername(), getTotScoreUser(user.getId()), user.getLevel()));
+        }
+        // Ordinamento decrescente per totalScore
+        responses.sort(Comparator.comparing(LeaderboardResponse::bestScore).reversed());
+        
+        // Se vuoi limitare i risultati (es. top N)
+        if (limit > 0 && limit < responses.size()) {
+            responses = responses.subList(0, limit);
+        }
+        return responses;
+    }
+
+    public List<LeaderboardResponse> getTopScoresPerGame(String gameCode, int limit) {
         List<UserGameProgress> progresses = getRepository().findTopByGameCodeOrderByBestScoreDesc(gameCode, PageRequest.of(0, limit));
         return progresses.stream()
             .map(p -> LeaderboardResponse.fromEntity(userRepository.findById(p.getUser().getId()).orElse(null), p))
             .toList();
     }
 
-    public List<LeaderboardResponse> topFlappy(int limit) {
-        return getTopScores("flappy", limit);
+    public Integer getTotScoreUser(long userId) {
+        return getRepository().findByUserId(userId).stream()
+            .map(UserGameProgress::getBestScore)
+            .reduce(0, Integer::sum);
     }
 }

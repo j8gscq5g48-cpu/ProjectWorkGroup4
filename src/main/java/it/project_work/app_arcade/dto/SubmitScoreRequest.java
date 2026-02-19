@@ -1,19 +1,15 @@
 package it.project_work.app_arcade.dto;
 
-import it.project_work.app_arcade.models.UserGameProgress;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record SubmitScoreRequest(
-    Long userId, 
-    String gamecode, 
-    Integer scoreRun) {
-    
+        @NotBlank
+        String gameCode,
+        @NotNull
+        @Min(0)
+        Integer score
+        ) {
 
-    public static SubmitScoreRequest fromEntity(UserGameProgress progress) {
-        return new SubmitScoreRequest(
-            progress.getUser().getId(),
-            progress.getGameCode(),
-            progress.getLastScore()
-        );
-
-    }
 }

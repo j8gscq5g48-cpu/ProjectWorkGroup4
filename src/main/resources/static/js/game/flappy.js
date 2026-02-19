@@ -358,6 +358,18 @@ window.addEventListener("resize", () => {
 //======================== MAIN LOOP ===============================
 let animationId;
 
+function triggerGameOver() {
+  safePlay(hitSound);
+  clearInterval(spawnInterval);
+  gameState = "gameover";
+
+  if (!scoreSent) {
+    scoreSent = true;
+    window.submitScore?.("flappy", punteggio);
+  }
+}
+
+
 function animate() {
   animationId = requestAnimationFrame(animate);
   if (!window.__flappyRunning) return;
@@ -400,9 +412,7 @@ function animate() {
           player.y + player.radius >= t.y + t.height + t.spazio;
 
         if (collideTop || collideBottom) {
-          safePlay(hitSound);
-          clearInterval(spawnInterval);
-          gameState = "gameover";
+          triggerGameOver();
         }
       }
     });
@@ -410,15 +420,7 @@ function animate() {
     // collisione limiti (soffitto + pavimento)
     const floorH = floorLoaded ? floor.height / 2 : 0;
     if (player.y - player.radius <= 0 || player.y + player.radius >= H - floorH) {
-      safePlay(hitSound);
-      clearInterval(spawnInterval);
-      gameState = "gameover";
-
-      // ✅ invio punteggio una sola volta
-      if (!scoreSent) {
-        scoreSent = true;
-        window.submitScore?.(punteggio);
-      }
+      triggerGameOver();
     }
 
 

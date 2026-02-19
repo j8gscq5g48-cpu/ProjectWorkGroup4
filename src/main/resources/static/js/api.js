@@ -230,6 +230,15 @@ const api = (() => {
         });
     }
 
+    async function submitScore(gameCode, score) {
+        // adatta i nomi campi al DTO backend
+        return request("/api/game/score", {
+            method: "POST",
+            body: { gameCode, score },
+            headers: { "Accept": "application/json" },
+        });
+    }
+
     return {
         // methods
         get,
@@ -242,6 +251,7 @@ const api = (() => {
         logout,
         changeMyUsername,
         deleteMyAccount,
+        submitScore,
 
         // error class (utile per auth.js / UI)
         ApiError,

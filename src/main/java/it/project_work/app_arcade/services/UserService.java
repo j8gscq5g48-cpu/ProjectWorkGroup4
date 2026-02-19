@@ -37,7 +37,7 @@ public class UserService extends GenericService<Long, User, UserRepository> {
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
         List<UserGameProgress> progress = progressRepository.findByUserId(userId);
         return MeResponse.fromEntity(user, progress.stream()
-                .filter(p -> p.getGameCode().equals("flappy"))
+                .filter(p -> "FLAPPY".equalsIgnoreCase(p.getGameCode()))
                 .findFirst()
                 .orElse(null));
     }

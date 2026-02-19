@@ -3,7 +3,6 @@ package it.project_work.app_arcade.services;
 import org.springframework.stereotype.Service;
 
 import it.project_work.app_arcade.dto.ProgressResponse;
-import it.project_work.app_arcade.dto.SubmitScoreRequest;
 import it.project_work.app_arcade.models.User;
 import it.project_work.app_arcade.models.UserGameProgress;
 import it.project_work.app_arcade.repositories.ProgressRepository;
@@ -12,6 +11,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ProgressService extends GenericService<Long, UserGameProgress, ProgressRepository> {
+
     private final UserRepository userRepository;
 
     public ProgressService(UserRepository userRepository) {
@@ -19,45 +19,34 @@ public class ProgressService extends GenericService<Long, UserGameProgress, Prog
     }
 
     @Transactional
-    public SubmitScoreRequest submitScore(Long userId, String gamecode, Integer scoreRun){
+    public ProgressResponse submitScore(String username, String gameCode, Integer scoreRun) {
 
-        UserGameProgress progress = getRepository().findByUserIdAndGameCode(userId, gamecode).orElse(null);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
 
-        User user =userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+        // standardizza il gameCode
+        String code = gameCode.trim().toLowerCase();
 
-        if(levelUp(user, scoreRun)){
-            user.setLevel(user.getLevel()+1);
-            userRepository.save(user);
-        }
-
-        if (progress == null){
-            UserGameProgress newProgress = new UserGameProgress();
-            newProgress.setUser(user);
-            newProgress.setGameCode(gamecode);
-            newProgress.setBestScore(scoreRun);
-            newProgress.setLastScore(scoreRun);
-            return SubmitScoreRequest.fromEntity(getRepository().save(newProgress));
-        }
+        UserGameProgress progress = getRepository()
+                .findByUserIdAndGameCode(user.getId(), code)
+                .orElseGet(() -> {
+                    UserGameProgress p = new UserGameProgress();
+                    p.setUser(user);
+                    p.setGameCode(code);
+                    // best/last/playedCount 0 di default, ok
+                    return p;
+                });
 
         progress.setLastScore(scoreRun);
-        progress.setPlayedCount(progress.getPlayedCount()+1);
+        progress.setPlayedCount(progress.getPlayedCount() + 1);
+
         if (scoreRun > progress.getBestScore()) {
             progress.setBestScore(scoreRun);
         }
-        return SubmitScoreRequest.fromEntity(getRepository().save(progress));
+
+        UserGameProgress saved = getRepository().save(progress);
+
+        return new ProgressResponse(saved.getBestScore(), saved.getLastScore());
     }
 
-    public ProgressResponse getGameProgress(String gamecode, String username){
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
-        UserGameProgress progress = getRepository().findByUserIdAndGameCode(user.getId(), gamecode)
-                .orElseThrow(() -> new IllegalArgumentException("Progress non trovato"));
-        return new ProgressResponse(progress.getBestScore(), progress.getLastScore());
-    }
-
-    private boolean levelUp(User user, int score) {
-        int levelUpThreshold = 5;
-
-        return score>=levelUpThreshold;
-    }
 }

@@ -158,19 +158,10 @@ window.addEventListener("resize", tryStartPendingGame);
    - Se loggato: POST /api/game/score
    - Da chiamare da flappy.js quando la run finisce
 ========================================================= */
-window.submitScore = async function submitScore(score) {
+window.submitScore = async (gameCode, score) => {
     try {
-        if (!window.api) return; // api.js non caricato
-        const me = await api.me();
-        if (!me) return; // guest: non inviamo nulla
-
-        // payload minimal (adatta ai vostri DTO)
-        await api.post("/api/game/score", {
-            game: currentGame || "flappy",
-            score: Number(score) || 0,
-        });
-    } catch (err) {
-        // non blocchiamo il gioco per errori di rete
-        console.warn("Score non inviato:", err);
+        await api.post("/api/game/score", { gameCode, score });
+    } catch (e) {
+        console.error("Errore submitScore:", e);
     }
 };

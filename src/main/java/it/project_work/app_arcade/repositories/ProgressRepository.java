@@ -3,7 +3,7 @@ package it.project_work.app_arcade.repositories;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.PageRequest;
+import org.springframework.boot.data.autoconfigure.web.DataWebProperties.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +19,7 @@ public interface ProgressRepository extends JpaRepository<UserGameProgress, Long
 
     List<UserGameProgress> findByUserId(Long userId);
 
-    List<UserGameProgress> findTopByGameCodeOrderByBestScoreDesc(String gameCode, PageRequest of);
+    List<UserGameProgress> findByGameCodeOrderByBestScoreDesc(String gameCode, Pageable pageable);
 
     @Modifying
     @Query("delete from UserGameProgress p where p.user.id = :userId")

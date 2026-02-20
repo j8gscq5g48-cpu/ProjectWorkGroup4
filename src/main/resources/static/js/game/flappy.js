@@ -1,14 +1,15 @@
 /* =========================================================
-   flappy.js (RESPONSIVE + header fixed friendly)
-   - Canvas dimensionato sul .main-game (non window)
-   - Supporto devicePixelRatio (nitidezza)
-   - Tutti i calcoli in CSS pixels via getCanvasW/H()
+   flappy.js (RESPONSIVE + TIME-BASED)
+   - Canvas dimensionato sul canvas reale (getBoundingClientRect)
+   - Supporto devicePixelRatio
+   - Movimento time-based (stesso gameplay su 60/144Hz)
 ========================================================= */
-const ASSET_BASE = "/"; // Spring Boot static => root "/"
+const ASSET_BASE = "/";
+
 const canvas = document.querySelector("#canvas");
 const c = canvas.getContext("2d");
 
-// ----------------------- CANVAS RESPONSIVE -----------------------
+// ----------------------- CANVAS / SCALE -----------------------
 function getDpr() {
   return window.devicePixelRatio || 1;
 }
@@ -25,17 +26,18 @@ function resizeCanvas() {
   const dpr = getDpr();
   const rect = canvas.getBoundingClientRect();
 
+  // overlay chiuso => rect 0, evita resize sbagliati
   if (rect.width === 0 || rect.height === 0) return false;
 
   canvas.width = Math.max(1, Math.floor(rect.width * dpr));
   canvas.height = Math.max(1, Math.floor(rect.height * dpr));
 
+  // lavori in CSS pixels
   c.setTransform(dpr, 0, 0, dpr, 0, 0);
   return true;
 }
 
 let SCALE = 1;
-
 const BASE_W = 900;
 const BASE_H = 500;
 
@@ -43,11 +45,10 @@ function recomputeScale() {
   const w = getCanvasW();
   const h = getCanvasH();
   SCALE = Math.min(w / BASE_W, h / BASE_H);
-  SCALE = Math.min(SCALE, 1.15);
+  SCALE = Math.min(SCALE, 1.15); // cap max, niente min (su mobile rovina)
 }
 
-
-// ======================== AUDIO ========================
+// ----------------------- AUDIO -----------------------
 const jumpSound = new Audio(`${ASSET_BASE}audio/wing.wav`);
 jumpSound.volume = 0.5;
 
@@ -67,18 +68,22 @@ function safePlay(audioEl) {
 }
 
 let audioUnlocked = false;
-
 function unlockAudio() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
-  [jumpSound, hitSound, pointSound].forEach(a => {
+  [jumpSound, hitSound, pointSound].forEach((a) => {
     try {
       a.muted = true;
       const p = a.play();
       if (p?.then) {
-        p.then(() => { a.pause(); a.currentTime = 0; a.muted = false; })
-          .catch(() => { a.muted = false; });
+        p.then(() => {
+          a.pause();
+          a.currentTime = 0;
+          a.muted = false;
+        }).catch(() => {
+          a.muted = false;
+        });
       } else {
         a.muted = false;
       }
@@ -86,8 +91,7 @@ function unlockAudio() {
   });
 }
 
-
-// ======================== UTILS ========================
+// ----------------------- UTILS -----------------------
 function applyGlow(color, blur) {
   c.shadowColor = color;
   c.shadowBlur = blur;
@@ -96,7 +100,7 @@ function resetGlow() {
   c.shadowBlur = 0;
 }
 
-// ======================== ASSETS ========================
+// ----------------------- ASSETS -----------------------
 let backgroundLoaded = false;
 const background = new Image();
 background.src = `${ASSET_BASE}images/background.png`;
@@ -107,26 +111,55 @@ const floor = new Image();
 floor.src = `${ASSET_BASE}images/base.png`;
 floor.onload = () => (floorLoaded = true);
 
-//======================== PLAYER ===============================
+function getFloorH() {
+  if (!floorLoaded) return 0;
+  const imgH = floor.naturalHeight || floor.height;
+  return Math.round((imgH / 2) * SCALE);
+}
+
+// ----------------------- TUNING (facile da regolare) -----------------------
+function isMobile() {
+  return getCanvasW() < 720;
+}
+function getGap() {
+  // gap verticale
+  const GAP_DESKTOP = 140;
+  const GAP_MOBILE = 120; // più stretto in mobile (più difficile)
+  return Math.round((isMobile() ? GAP_MOBILE : GAP_DESKTOP) * SCALE);
+}
+function getSpawnMs() {
+  const SPAWN_DESKTOP = 2000;
+  const SPAWN_MOBILE = 1650; // più frequente in mobile
+  return isMobile() ? SPAWN_MOBILE : SPAWN_DESKTOP;
+}
+function getPipeSpeed() {
+  const SPEED_DESKTOP = 5;
+  const SPEED_MOBILE = 5.4;
+  return (isMobile() ? SPEED_MOBILE : SPEED_DESKTOP) * SCALE;
+}
+function getMargin() {
+  return Math.round(Math.max(90, 100 * SCALE));
+}
+
+// ----------------------- PLAYER -----------------------
 class Player {
-  constructor(x, y, radius, gravity) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.gravity = gravity;
+  constructor() {
+    this.x = Math.round(getCanvasW() / 5);
+    this.y = getCanvasH() / 2;
+
     this.velocity = 0;
     this.rotation = 0;
+
+    this.radius = 18 * SCALE;
+    this.gravity = 0.5 * SCALE;
 
     this.image = new Image();
     this.image.src = `${ASSET_BASE}images/bird.png`;
     this.scale = 2 * SCALE;
-
   }
 
   draw() {
-    // se non è caricata o è rotta, non disegnare
     if (!this.image.complete || this.image.naturalWidth === 0) return;
-
 
     const width = this.image.width * this.scale;
     const height = this.image.height * this.scale;
@@ -138,12 +171,14 @@ class Player {
     c.restore();
   }
 
-  update() {
-    this.velocity += this.gravity;
+  update(step = 1) {
+    // time-based: tutto moltiplicato per step
+    this.velocity += this.gravity * step;
+
     const maxVel = 10 * SCALE;
     if (this.velocity > maxVel) this.velocity = maxVel;
 
-    this.y += this.velocity;
+    this.y += this.velocity * step;
 
     this.rotation = this.velocity * 0.1;
     if (this.rotation < -Math.PI / 2) this.rotation = -Math.PI / 2;
@@ -153,30 +188,35 @@ class Player {
   }
 
   jump() {
+    // velocità "per frame 60fps" -> ok, perché poi y usa *step
     this.velocity = -9 * SCALE;
     safePlay(jumpSound);
   }
+
+  syncScale() {
+    this.radius = 18 * SCALE;
+    this.gravity = 0.5 * SCALE;
+    this.scale = 2 * SCALE;
+  }
 }
 
-//======================== TUBI ===============================
+// ----------------------- TUBI -----------------------
 class Tubo {
   constructor() {
-    this.x = getCanvasW();
+    const W = getCanvasW();
+    const H = getCanvasH();
 
+    this.x = W;
     this.width = Math.round(75 * SCALE);
-    this.velocity = 5 * SCALE;
+    this.velocity = getPipeSpeed();
     this.passed = false;
 
-    // gap e margine: NON farli diventare microscopici su mobile
-    const isMobile = getCanvasW() < 720;          // soglia semplice
-    const GAP_BASE = isMobile ? 130 : 140;        // mobile più stretto
-    this.spazio = Math.round(GAP_BASE * SCALE);
-    const margin = Math.round(Math.max(90, 100 * SCALE));
+    this.spazio = getGap();
+    const margin = getMargin();
 
     const floorH = getFloorH();
-    const playableH = getCanvasH() - floorH;
+    const playableH = H - floorH;
 
-    // i tubi devono fermarsi al "soffitto del pavimento"
     this.height = playableH;
 
     const min = -playableH + margin;
@@ -186,6 +226,7 @@ class Tubo {
     this.image = new Image();
     this.image.src = `${ASSET_BASE}images/pipe-green.png`;
   }
+
   draw() {
     if (!this.image.complete) return;
 
@@ -202,17 +243,23 @@ class Tubo {
     c.save();
     c.translate(this.x + this.width / 2, this.y + this.height / 2);
     c.scale(1, -1);
-    c.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+    c.drawImage(
+      this.image,
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
+    );
     c.restore();
   }
 
-  update() {
-    this.x -= this.velocity;
+  update(step = 1) {
+    this.x -= this.velocity * step;
     this.draw();
   }
 }
 
-//======================== UI SCREENS ===============================
+// ----------------------- UI SCREENS -----------------------
 function drawStartScreen() {
   const W = getCanvasW();
   const H = getCanvasH();
@@ -227,8 +274,8 @@ function drawStartScreen() {
   c.fillText(titleText, (W - titleWidth) / 2, H / 3);
   resetGlow();
 
-  c.font = `${Math.round(30 * SCALE)}px 'Press Start 2P'`;
-  const instructionText = "Press W to Jump";
+  c.font = `${Math.round(26 * SCALE)}px 'Press Start 2P'`;
+  const instructionText = isMobile() ? "Tap to Start" : "Press W to Jump";
   const instructionWidth = c.measureText(instructionText).width;
 
   applyGlow("#fff", 15);
@@ -250,8 +297,8 @@ function drawGameOverScreen() {
   resetGlow();
 
   c.fillStyle = "white";
-  c.font = `${Math.round(30 * SCALE)}px 'Press Start 2P'`;
-  const instructionText = "Press W to Restart";
+  c.font = `${Math.round(26 * SCALE)}px 'Press Start 2P'`;
+  const instructionText = isMobile() ? "Tap to Restart" : "Press W to Restart";
   const instructionWidth = c.measureText(instructionText).width;
 
   applyGlow("#fff", 15);
@@ -259,149 +306,142 @@ function drawGameOverScreen() {
   resetGlow();
 }
 
-//======================== GAME STATE ===============================
+// ----------------------- GAME STATE -----------------------
 let gameState = "start"; // "start" | "playing" | "gameover"
-let spawnInterval;
+let spawnInterval = null;
 let tubi = [];
 let punteggio = 0;
+let scoreSent = false;
 
-let scoreSent = false; // evita invii multipli
+let player = null;
 
-// inizializzo player DOPO resize
-let player = new Player(
-  Math.round(getCanvasW() / 5),
-  getCanvasH() / 2,
-  18 * SCALE,
-  0.5 * SCALE
-);
-
-player.draw();
-
-function startGame() {
+function resetRound() {
   clearInterval(spawnInterval);
+  spawnInterval = null;
 
-  const isMobile = getCanvasW() < 720;
-  const SPAWN_MS = isMobile ? 1600 : 2000;
-
-  spawnInterval = setInterval(() => tubi.push(new Tubo()), SPAWN_MS);
-}
-
-function resetGame() {
-  clearInterval(spawnInterval);
   tubi = [];
   punteggio = 0;
-  scoreSent = false; //  nuova run, nuovo invio
+  scoreSent = false;
+
+  if (!player) player = new Player();
 
   player.x = Math.round(getCanvasW() / 5);
   player.y = getCanvasH() / 2;
   player.velocity = 0;
   player.rotation = 0;
-
-  player.radius = 18 * SCALE;
-  player.gravity = 0.5 * SCALE;
-  player.scale = 2 * SCALE;
-
-  startGame();
+  player.syncScale();
 }
 
-//======================== INPUT ===============================
-function onKeyPress(e) {
+function startSpawning() {
+  clearInterval(spawnInterval);
+  spawnInterval = setInterval(() => tubi.push(new Tubo()), getSpawnMs());
+}
+
+function submitScoreSafe() {
+  const fn = window.submitScore;
+  if (typeof fn !== "function") return;
+  try {
+    // compat: se la tua submitScore accetta 1 argomento o 2
+    if (fn.length >= 2) fn("flappy", punteggio);
+    else fn(punteggio);
+  } catch { }
+}
+
+function triggerGameOver() {
+  if (gameState === "gameover") return;
+
+  safePlay(hitSound);
+  clearInterval(spawnInterval);
+  spawnInterval = null;
+
+  gameState = "gameover";
+
+  if (!scoreSent) {
+    scoreSent = true;
+    submitScoreSafe();
+  }
+}
+
+// ----------------------- INPUT -----------------------
+function handleJumpAction() {
   if (!window.__flappyRunning) return;
+
+  if (gameState === "start") {
+    gameState = "playing";
+    startSpawning();
+    player.jump(); // più naturale: al primo input parte e salta
+  } else if (gameState === "playing") {
+    player.jump();
+  } else if (gameState === "gameover") {
+    resetRound();
+    gameState = "playing";
+    startSpawning();
+    player.jump();
+  }
+}
+
+function onKeyDown(e) {
   if ((e.key || "").toLowerCase() !== "w") return;
   handleJumpAction();
 }
 
 function onPointerDown() {
-  if (!window.__flappyRunning) return;
   handleJumpAction();
 }
 
-function handleJumpAction() {
-  if (gameState === "start") {
-    gameState = "playing";
-    startGame();
-  } else if (gameState === "playing") {
-    player.jump();
-  } else if (gameState === "gameover") {
-    resetGame();
-    gameState = "playing";
-  }
-}
-
 function bindInputs() {
-  window.addEventListener("keypress", onKeyPress);
+  window.addEventListener("keydown", onKeyDown);
   canvas.addEventListener("pointerdown", onPointerDown);
 }
-
 function unbindInputs() {
-  window.removeEventListener("keypress", onKeyPress);
+  window.removeEventListener("keydown", onKeyDown);
   canvas.removeEventListener("pointerdown", onPointerDown);
 }
 
-// ======================== RESIZE HANDLER (UNICO) ========================
+// ----------------------- RESIZE (UNICO) -----------------------
 function handleResize() {
   if (!window.__flappyRunning) return;
   if (!resizeCanvas()) return;
 
   recomputeScale();
 
+  if (!player) player = new Player();
+  player.syncScale();
+
   player.x = Math.round(getCanvasW() / 5);
 
-  player.scale = 2 * SCALE;
-  player.radius = 18 * SCALE;
-  player.gravity = 0.5 * SCALE;
-}
-
-function getFloorH() {
-  if (!floorLoaded) return 0;
-  // altezza reale del pavimento sopra il bordo inferiore
-  return Math.round((floor.height / 2) * SCALE);
+  // clamp Y dentro area giocabile
+  const floorH = getFloorH();
+  const bottomLimit = getCanvasH() - floorH - player.radius;
+  if (player.y > bottomLimit) player.y = bottomLimit;
+  if (player.y < player.radius) player.y = player.radius;
 }
 
 window.addEventListener("resize", handleResize);
-
 if (window.visualViewport) {
   window.visualViewport.addEventListener("resize", handleResize);
 }
 
+// ----------------------- MAIN LOOP (TIME-BASED) -----------------------
+let animationId = null;
+let lastTs = null;
 
-// resize mobile più affidabile (barra indirizzi / zoom / tastiera)
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", () => {
-    if (!window.__flappyRunning) return; // evita resize quando il gioco è chiuso
-    resizeCanvas();
-    recomputeScale();
-
-    // riallinea scale del player (stessi update che fai nel window.resize)
-    player.scale = 2 * SCALE;
-    player.radius = 18 * SCALE;
-    player.gravity = 0.5 * SCALE;
-  });
-}
-
-//======================== MAIN LOOP ===============================
-let animationId;
-
-function triggerGameOver() {
-  safePlay(hitSound);
-  clearInterval(spawnInterval);
-  gameState = "gameover";
-
-  if (!scoreSent) {
-    scoreSent = true;
-    window.submitScore?.("flappy", punteggio);
-  }
-}
-
-
-function animate() {
+function animate(ts) {
   animationId = requestAnimationFrame(animate);
-  if (!window.__flappyRunning) return;
+  if (!window.__flappyRunning) {
+    lastTs = ts;
+    return;
+  }
+
+  if (lastTs == null) lastTs = ts;
+  const dtMs = Math.min(50, ts - lastTs); // anti-spike
+  lastTs = ts;
+
+  const step = dtMs / (1000 / 60); // 1 = 1 frame a 60fps
 
   const W = getCanvasW();
   const H = getCanvasH();
 
-  // clear frame (importante per evitare “scie”)
   c.clearRect(0, 0, W, H);
 
   // sfondo
@@ -415,57 +455,63 @@ function animate() {
     drawStartScreen();
   }
 
-  // update gameplay
-  if (gameState === "playing") {
-    player.update();
+  // update + draw
+  if (player) {
+    if (gameState === "playing") {
+      player.update(step);
 
-    // rimuove tubi fuori schermo
-    if (tubi.length > 0 && tubi[0].x <= -tubi[0].width) tubi.splice(0, 1);
+      // aggiorna tubi
+      tubi.forEach((t) => t.update(step));
 
-    // aggiorna tubi
-    tubi.forEach((t) => t.update());
+      // rimuove tubi fuori schermo
+      if (tubi.length > 0 && tubi[0].x <= -tubi[0].width) tubi.splice(0, 1);
 
-    // collisioni tubi
-    tubi.forEach((t) => {
-      if (player.x + player.radius >= t.x && player.x - player.radius <= t.x + t.width) {
+      // collisioni tubi + punteggio
+      for (const t of tubi) {
+        // score
+        if (!t.passed && player.x > t.x + t.width) {
+          t.passed = true;
+          punteggio += 1;
+          safePlay(pointSound);
+        }
+
+        // collisioni (bounding box semplificata)
+        const r = player.radius;
+        const xOverlap = player.x + r >= t.x && player.x - r <= t.x + t.width;
+        if (!xOverlap) continue;
+
+        const topY = t.y;
+        const topH = t.height;
+
+        const bottomY = t.y + t.height + t.spazio;
+        const bottomH = t.height;
+
         const collideTop =
-          player.y - player.radius <= t.y + t.height && player.y + player.radius >= t.y;
+          player.y - r <= topY + topH && player.y + r >= topY;
 
         const collideBottom =
-          player.y - player.radius <= t.y + t.height + t.spazio + t.height &&
-          player.y + player.radius >= t.y + t.height + t.spazio;
+          player.y + r >= bottomY && player.y - r <= bottomY + bottomH;
 
         if (collideTop || collideBottom) {
           triggerGameOver();
+          break;
         }
       }
-    });
 
-    // collisione limiti (soffitto + pavimento)
-    const floorH = getFloorH();
-    if (player.y - player.radius <= 0 || player.y + player.radius >= H - floorH) {
-      triggerGameOver();
-    }
-
-
-    // punteggio (passaggio oltre tubo)
-    tubi.forEach(tubo => {
-      if (!tubo.passed && player.x > tubo.x + tubo.width) {
-        tubo.passed = true;
-        punteggio += 1;
-        pointSound.currentTime = 0;
-        safePlay(pointSound);
+      // collisione limiti (soffitto + pavimento)
+      const floorH = getFloorH();
+      const bottomLimit = H - floorH;
+      if (player.y - player.radius <= 0 || player.y + player.radius >= bottomLimit) {
+        triggerGameOver();
       }
-    });
+    } else {
+      // non playing: ridisegno statico
+      tubi.forEach((t) => t.draw());
+      player.draw();
+    }
   }
 
-  // in gameover: ridisegno statico
-  if (gameState !== "playing") {
-    tubi.forEach((t) => t.draw());
-    player.draw();
-  }
-
-  // punteggio (playing o gameover)
+  // punteggio
   if (gameState === "playing" || gameState === "gameover") {
     c.font = `${Math.round(50 * SCALE)}px 'Press Start 2P'`;
     c.fillStyle = "#fff";
@@ -473,8 +519,8 @@ function animate() {
     c.shadowBlur = 20;
 
     const text = String(punteggio);
-    const w = c.measureText(text).width;
-    c.fillText(text, (W - w) / 2, H / 6);
+    const tw = c.measureText(text).width;
+    c.fillText(text, (W - tw) / 2, H / 6);
 
     c.shadowBlur = 0;
   }
@@ -488,13 +534,13 @@ function animate() {
     c.drawImage(floor, W / 2, H - floorH, W / 2, drawH);
   }
 
-
   // game over overlay
   if (gameState === "gameover") {
     drawGameOverScreen();
   }
 }
 
+// ----------------------- API -----------------------
 window.Flappy = {
   start() {
     if (window.__flappyRunning) return;
@@ -503,37 +549,41 @@ window.Flappy = {
     unlockAudio();
     bindInputs();
 
-    // aspetta che l'overlay sia realmente visibile (layout pronto)
+    // aspetta overlay visibile (layout pronto)
     requestAnimationFrame(() => {
-      const ok = resizeCanvas();
-      if (ok) recomputeScale();
-
-      // riallinea parametri dipendenti da SCALE
-      player.scale = 2 * SCALE;
-      player.radius = 18 * SCALE;
-      player.gravity = 0.5 * SCALE;
+      if (resizeCanvas()) recomputeScale();
+      if (!player) player = new Player();
+      player.syncScale();
 
       gameState = "start";
-      resetGame();
-      animate();
+      resetRound();
+
+      lastTs = null;
+      animate(performance.now());
     });
   },
+
   stop() {
     window.__flappyRunning = false;
 
-    unbindInputs();            // disattiva input quando chiudi
-
+    unbindInputs();
     clearInterval(spawnInterval);
-    cancelAnimationFrame(animationId);
+    spawnInterval = null;
 
-    [jumpSound, hitSound, pointSound].forEach(a => {
-      try { a.pause(); a.currentTime = 0; } catch { }
+    cancelAnimationFrame(animationId);
+    animationId = null;
+    lastTs = null;
+
+    [jumpSound, hitSound, pointSound].forEach((a) => {
+      try {
+        a.pause();
+        a.currentTime = 0;
+      } catch { }
     });
 
+    // pulizia canvas
     const W = getCanvasW();
     const H = getCanvasH();
     c.clearRect(0, 0, W, H);
-  }
+  },
 };
-
-

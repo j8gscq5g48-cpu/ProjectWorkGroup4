@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const me = await requireAuth();
     if (!me) return;
 
-    // --- DOM ---
+    // DOM
     const scopeSelect = document.getElementById("lb-scope");
     const gameWrap = document.getElementById("lb-game-wrap");
     const gameSelect = document.getElementById("lb-game");
@@ -16,17 +16,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tbody = document.getElementById("lb-tbody");
     const rowTpl = document.getElementById("lb-row-template");
 
-    // --- CONFIG ENDPOINTS (ADATTA SE SERVE) ---
-    const ENDPOINTS = {
-        global: (limit) => `/api/leaderboard/global?limit=${limit}`,
-        game: (gameCode, limit) => `/api/leaderboard/game/${encodeURIComponent(gameCode)}?limit=${limit}`,
-        // opzionale (se esiste): lista giochi dal backend
-        // games: () => `/api/games`,
-    };
-
     const LIMIT = 20;
 
-    // --- helpers UI ---
+    // Endpoint (adatta se serve)
+    const ENDPOINTS = {
+        global: (limit) => `/api/leaderboard/global?limit=${limit}`,
+        game: (gameCode, limit) =>
+            `/api/leaderboard/game/${encodeURIComponent(gameCode)}?limit=${limit}`,
+    };
+
+    // helpers
     const show = (el) => (el.hidden = false);
     const hide = (el) => (el.hidden = true);
 
@@ -46,13 +45,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         tbody.innerHTML = "";
     }
 
-    function normalizeRows(payload) {
-        if (Array.isArray(payload)) return payload;
-        if (payload && Array.isArray(payload.rows)) return payload.rows;
-        if (payload && Array.isArray(payload.content)) return payload.content; // Spring Page<>
-        return [];
-    }
-
     function toggleColumns(scope) {
         const showGlobal = scope === "GLOBAL";
         document.querySelectorAll('[data-col="GLOBAL"]').forEach((el) => (el.hidden = !showGlobal));
@@ -67,86 +59,64 @@ document.addEventListener("DOMContentLoaded", async () => {
         })}`;
     }
 
-    // placeholder 1x1 trasparente (evita icona rotta se manca url)
     const IMG_1PX =
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
-    function fillRow(node, data, rank, scope) {
-        // rank
-        node.querySelector('[data-field="rank"]').textContent = String(rank);
+    function renderRow(rank, scope, data) {
+        const fragment = rowTpl.content.cloneNode(true);
+        const tr = fragment.querySelector("tr");
 
-        // avatar
-        const img = node.querySelector('[data-field="avatarUrl"]');
-        const avatarUrl = data.avatarUrl || data.imageUrl || data.avatar || "";
-        img.src = avatarUrl || IMG_1PX;
+        tr.querySelector('[data-field="rank"]').textContent = String(rank);
+
+        const img = tr.querySelector('[data-field="avatarUrl"]');
+        img.src = data.avatarUrl || IMG_1PX;
         img.alt = data.username ? `Avatar di ${data.username}` : "Avatar";
 
-        // username
-        node.querySelector('[data-field="username"]').textContent = data.username ?? "—";
+        tr.querySelector('[data-field="username"]').textContent = data.username ?? "—";
 
-        // campi GLOBAL
-        const totalScore = data.totalScore ?? data.sumBestScore ?? data.scoreTotal ?? 0;
-        const totalPlayed = data.totalPlayed ?? data.totalGamesPlayed ?? data.playedTotal ?? 0;
-        const level = data.level ?? data.userLevel ?? "—";
+        if (scope === "GLOBAL") {
+            // LeaderboardResponse
+            tr.querySelector('[data-field="totalScore"]').textContent = String(data.totalScore ?? 0);
+            tr.querySelector('[data-field="totalPlayed"]').textContent = String(data.totalPlayed ?? 0);
+            tr.querySelector('[data-field="level"]').textContent = String(data.level ?? "—");
+        } else {
+            // GameTopDTO
+            tr.querySelector('[data-field="bestScore"]').textContent = String(data.bestScore ?? 0);
+            tr.querySelector('[data-field="playedCount"]').textContent = String(data.playedCount ?? 0);
+            tr.querySelector('[data-field="levelGame"]').textContent = String(data.level ?? "—");
+        }
 
-        const bestScore = data.bestScore ?? 0;
-        const playedCount = data.playedCount ?? data.gamePlayedCount ?? 0;
-
-        // compila tutte le celle esistenti nel template
-        const setText = (selector, value) => {
-            const el = node.querySelector(selector);
-            if (el) el.textContent = value;
-        };
-
-        setText('[data-field="totalScore"]', String(totalScore));
-        setText('[data-field="totalPlayed"]', String(totalPlayed));
-        setText('[data-field="level"]', String(level));
-
-        setText('[data-field="bestScore"]', String(bestScore));
-        setText('[data-field="playedCount"]', String(playedCount));
-
-        // toggle hidden sulle celle della riga in base allo scope
+        // toggle celle riga (coerente col thead)
         const showGlobal = scope === "GLOBAL";
-        node.querySelectorAll('[data-col="GLOBAL"]').forEach((el) => (el.hidden = !showGlobal));
-        node.querySelectorAll('[data-col="GAME"]').forEach((el) => (el.hidden = showGlobal));
+        tr.querySelectorAll('[data-col="GLOBAL"]').forEach((el) => (el.hidden = !showGlobal));
+        tr.querySelectorAll('[data-col="GAME"]').forEach((el) => (el.hidden = showGlobal));
+
+        tbody.appendChild(fragment);
     }
 
-    function render(rows, scope) {
-        clearTable();
-        rows.forEach((r, idx) => {
-            const fragment = rowTpl.content.cloneNode(true);
-            const tr = fragment.querySelector("tr");
-            fillRow(tr, r, idx + 1, scope);
-            tbody.appendChild(fragment);
-        });
-    }
-
-    // --- fetch ---
     async function fetchLeaderboard() {
         const scope = scopeSelect.value; // GLOBAL | GAME
         const gameCode = gameSelect.value;
 
         toggleColumns(scope);
         setStatus({ loading: true, empty: false, error: "" });
+        clearTable();
 
         try {
             const url = scope === "GLOBAL" ? ENDPOINTS.global(LIMIT) : ENDPOINTS.game(gameCode, LIMIT);
-            const payload = await api.get(url);
-            const rows = normalizeRows(payload);
+            const rows = await api.get(url); // qui mi aspetto List<...>
 
-            if (!rows.length) {
-                clearTable();
+            if (!Array.isArray(rows) || rows.length === 0) {
                 setStatus({ loading: false, empty: true, error: "" });
                 stampUpdated();
                 return;
             }
 
-            render(rows, scope);
+            rows.forEach((r, idx) => renderRow(idx + 1, scope, r));
             setStatus({ loading: false, empty: false, error: "" });
             stampUpdated();
         } catch (err) {
             console.error("Leaderboard load failed", err);
-            clearTable();
             setStatus({
                 loading: false,
                 empty: false,
@@ -155,13 +125,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- UI events ---
     function syncScopeUI() {
         const isGame = scopeSelect.value === "GAME";
         gameWrap.hidden = !isGame;
         toggleColumns(scopeSelect.value);
     }
 
+    // events
     scopeSelect.addEventListener("change", async () => {
         syncScopeUI();
         await fetchLeaderboard();

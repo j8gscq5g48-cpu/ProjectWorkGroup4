@@ -1,12 +1,11 @@
 package it.project_work.app_arcade.dto;
 
-import it.project_work.app_arcade.models.User;
-import it.project_work.app_arcade.models.UserGameProgress;
-
 public record LeaderboardResponse(
-    String username,
-    String avatar,
-    Integer bestScore,
-    Integer level,
-    Integer gameCount
-) {}
+        String username,
+        String avatarUrl,
+        Long totalScore, // somma bestScore di tutti i giochi
+        Long totalPlayed, // somma played_count di tutti i giochi
+        Integer level
+        ) {
+
+}

@@ -34,6 +34,10 @@
 
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/home.css">
+
+    <script src="/js/api.js" defer></script>
+    <script src="/js/home.js" defer></script>
+    <script src="/js/home-leaderboard.js" defer></script>
 </head>
 
 <body>
@@ -82,48 +86,17 @@
                 </header>
 
                 <div class="table-wrap" role="region" aria-label="Tabella classifica Top 5">
-                    <table>
-                        <caption class="sr-only">Classifica Top 5</caption>
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col" class="col-rank">#</th>
+                                <th scope="col" class="col-avatar">Avatar</th>
                                 <th scope="col">Utente</th>
-                                <th scope="col">Punteggio</th>
+                                <th scope="col">Punteggio totale</th>
                                 <th scope="col">Livello</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>PlayerOne</td>
-                                <td>9800</td>
-                                <td>4</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>ArcadeNinja</td>
-                                <td>8700</td>
-                                <td>7</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>QuizMaster</td>
-                                <td>7600</td>
-                                <td>6</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td>PixelHero</td>
-                                <td>6900</td>
-                                <td>4</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">5</th>
-                                <td>CasualGG</td>
-                                <td>5400</td>
-                                <td>6</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="home-lb-tbody"></tbody>
                     </table>
                 </div>
 
@@ -145,8 +118,6 @@
     <!--
     .sr-only { ... }
   -->
-    <script src="/js/api.js" defer></script>
-    <script src="/js/home.js" defer></script>
     <script src="/js/partials.js"></script>
 </body>
 

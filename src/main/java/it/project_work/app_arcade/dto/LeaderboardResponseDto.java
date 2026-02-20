@@ -4,7 +4,5 @@ import java.util.List;
 
 public record LeaderboardResponseDto(
     List<LeaderboardResponse> rows,
-    String gameCode,
-    Integer level,
-    Integer gameCount
+    String gameCode
 ) {}

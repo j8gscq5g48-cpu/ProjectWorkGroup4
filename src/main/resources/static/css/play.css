@@ -175,7 +175,7 @@
     /* dvh > vh su mobile */
     display: block;
     touch-action: none;
-    
+
     border: 1px solid rgba(255, 255, 254, 0.14);
     background: rgba(0, 0, 1, 0.35);
 }
@@ -277,6 +277,39 @@ fieldset.is-invalid {
     box-shadow: 0 0 0 3px rgba(255, 77, 77, .12);
 }
 
+/* =========================================================
+   GAME OVERLAY sizing per gioco
+========================================================= */
+
+/* default: come già hai (probabilmente "landscape card") */
+
+/* INVADERS in portrait: usa tutto lo spazio */
+@media (max-width: 900px) and (orientation: portrait) {
+
+    body.game--invaders .game-shell {
+        width: min(96vw, 520px);
+        height: min(86dvh, 920px);
+    }
+
+    body.game--invaders .game-stage {
+        width: 100%;
+        height: 100%;
+        padding: clamp(0.8rem, 2vw, 1.2rem);
+    }
+
+    /* 🔥 QUI è il punto: togliamo la forzatura landscape */
+    body.game--invaders .game-stage canvas,
+    body.game--invaders #canvas {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+        /* override 900/500 */
+        max-height: none;
+        /* override max-height */
+    }
+}
+
+/* FLAPPY in portrait: resta bloccato dal rotate overlay  */
 
 /* ============ Responsive ============ */
 @media (min-width: 720px) {
@@ -296,5 +329,44 @@ fieldset.is-invalid {
 
     .game-stage canvas {
         height: min(74vh, 620px);
+    }
+}
+
+/* =========================================================
+   INVADERS: cabinet portrait (anche su desktop)
+========================================================= */
+
+/* Desktop + generale: il contenitore diventa più alto e stretto */
+body.game--invaders .game-shell {
+    width: min(620px, 96vw);
+}
+
+/* Canvas portrait: più alto che largo */
+body.game--invaders .game-stage canvas,
+body.game--invaders #canvas {
+    aspect-ratio: 9 / 16;
+    /* portrait */
+    height: auto;
+    max-height: min(82dvh, 860px);
+}
+
+/* In portrait mobile: continua a usare tutto lo spazio (come già hai) */
+@media (max-width: 900px) and (orientation: portrait) {
+    body.game--invaders .game-shell {
+        width: min(96vw, 520px);
+        height: min(86dvh, 920px);
+    }
+
+    body.game--invaders .game-stage {
+        height: 100%;
+    }
+
+    body.game--invaders .game-stage canvas,
+    body.game--invaders #canvas {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+        /* qui lo stretch è voluto */
+        max-height: none;
     }
 }

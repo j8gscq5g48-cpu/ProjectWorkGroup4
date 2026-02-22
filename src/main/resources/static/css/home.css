@@ -1,210 +1,330 @@
 /* =========================================================
-   home.css (SOLO HOME) - look Flappy Birds / ArcadeHub
-   Dipende dalle variabili in :root di style.css
+   ArcadeHub - home.css | Mobile First
+   Scope: .main-home
 ========================================================= */
 
-/* Token locali HOME (scoped) */
 .main-home {
-  --home-sky-1: rgba(249, 220, 53, 0.18);
-  /* giallo soft */
-  --home-sky-2: rgba(254, 152, 0, 0.14);
-  /* arancio soft */
-  --home-grass-1: rgba(138, 192, 72, 0.20);
-  --home-grass-2: rgba(75, 174, 78, 0.18);
-
-  --home-card: rgba(255, 255, 254, 0.08);
-  --home-card-strong: rgba(255, 255, 254, 0.12);
-  --home-border: rgba(255, 255, 254, 0.18);
-
-  --home-shadow: 0 14px 40px rgba(0, 0, 1, 0.55);
-
-  --home-gap: clamp(1.4rem, 2.2vw, 2.6rem);
-  --home-pad: clamp(1.6rem, 2.6vw, 3.2rem);
-}
-
-/* =========================================================
-   FIX: header fisso → la home deve scendere sotto l'header
-========================================================= */
-.main-home {
-  width: 100%;
-  max-width: var(--container);
-  margin-inline: auto;
-
-  /* evita che l'hero finisca sotto l'header su mobile */
-  padding-top: calc(var(--header-h) + env(safe-area-inset-top) + var(--home-pad));
-  padding-left: var(--home-pad);
-  padding-right: var(--home-pad);
-  padding-bottom: var(--home-pad);
-
   display: grid;
-  gap: var(--home-gap);
+  gap: clamp(1.6rem, 2.4vw, 3.2rem);
 
-  background:
-    radial-gradient(900px 520px at 20% 0%, var(--home-sky-1), transparent 58%),
-    radial-gradient(800px 520px at 85% 10%, var(--home-sky-2), transparent 60%),
-    radial-gradient(900px 450px at 50% 105%, var(--home-grass-1), transparent 55%),
-    radial-gradient(900px 450px at 50% 115%, var(--home-grass-2), transparent 60%);
-  border-radius: clamp(1.6rem, 3vw, 2.4rem);
+  /* padding lo gestisce style.css su main:
+     - padding-top per header fisso
+     - padding-inline base
+  */
 }
 
-/* Sezioni: effetto “card arcade” */
+/* Sezioni Home come “panel” coerenti */
 .main-home>section {
-  background: linear-gradient(180deg, var(--home-card-strong), var(--home-card));
-  border: 1px solid var(--home-border);
-  border-radius: clamp(1.4rem, 2.4vw, 2rem);
-  padding: var(--home-pad);
-  box-shadow: var(--home-shadow);
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-1);
+  border-radius: calc(var(--radius) + 6px);
+  padding: var(--sp-3);
+  box-shadow: var(--shadow-1);
   backdrop-filter: blur(10px);
 }
 
-/* Header sezione: spacing consistente */
 .main-home>section>header {
-  margin-bottom: clamp(1.2rem, 1.8vw, 2rem);
+  margin-bottom: var(--sp-2);
 }
 
-/* Titoli */
-.hero-header h1 {
-  margin: 0 0 0.8rem;
-  font-size: clamp(3.0rem, 3vw + 1.4rem, 4.6rem);
-  letter-spacing: 0.3px;
-  text-shadow:
-    0 2px 0 rgba(0, 0, 1, 0.7),
-    0 0 22px rgba(249, 220, 53, 0.18);
-}
-
-.hero-header p,
-.how-it-works p,
-.leaderboard-preview p {
+.main-home>section>header p {
   max-width: 62ch;
-  color: rgba(255, 255, 254, 0.90);
-  margin: 0;
-  /* gestito dal margin del header sopra */
-}
-
-/* HERO: vibe arcade */
-.hero {
-  position: relative;
-  overflow: hidden;
-}
-
-/* barre decorative “pipelines” */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg,
-      rgba(249, 220, 53, 0.10) 0 12%,
-      rgba(255, 255, 254, 0.06) 12% 18%,
-      rgba(254, 152, 0, 0.10) 18% 30%,
-      rgba(138, 192, 72, 0.10) 30% 44%,
-      rgba(75, 174, 78, 0.10) 44% 58%,
-      rgba(82, 138, 44, 0.10) 58% 72%,
-      transparent 72% 100%);
-  mask-image: radial-gradient(600px 300px at 15% 25%, black 40%, transparent 70%);
-  opacity: 0.8;
 }
 
 /* =========================================================
-   BOTTONI HOME: ora sono .btn globali → qui solo “fine tuning”
+   HOME - HERO (upgrade)
 ========================================================= */
-.hero-actions {
+
+.main-home .hero {
+  padding: var(--sp-4);
+}
+
+.main-home .hero-inner {
+  display: grid;
+  gap: var(--sp-3);
+  align-items: center;
+}
+
+.main-home .hero-title {
+  margin: 0 0 var(--sp-2);
+}
+
+.main-home .hero-text {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--text-muted);
+}
+
+.main-home .hero-actions {
+  margin-top: var(--sp-3);
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(1.0rem, 1.5vw, 1.4rem);
-  margin-top: clamp(1.2rem, 1.8vw, 2rem);
+  gap: var(--sp-2);
 }
 
-/* look “pill” solo nella hero */
-.main-home .hero-actions .btn {
-  border-radius: 999px;
-  box-shadow: 0 10px 22px rgba(0, 0, 1, 0.35);
-}
-
-/* CTA sotto tabella: lascia normale (non forziamo pill) */
-.leaderboard-preview>p {
-  margin-top: clamp(1.2rem, 1.8vw, 2rem);
-}
-
-/* HOW IT WORKS */
-.how-it-works ol {
-  margin: 0;
-  padding-left: 2rem;
+.main-home .hero-stats {
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  list-style: none;
   display: grid;
-  gap: 0.8rem;
+  gap: var(--sp-2);
 }
 
-.how-it-works li {
-  padding: 0.9rem 1.1rem;
-  border-radius: 1.2rem;
-  background: rgba(255, 255, 254, 0.06);
-  border: 1px solid rgba(255, 255, 254, 0.10);
+.main-home .hero-stat {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-2);
+
+  padding: 1.0rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(7, 10, 18, 0.35);
 }
 
-/* ============ Tabella Top 5 ============ */
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: 1.6rem;
-  border: 1px solid rgba(255, 255, 254, 0.16);
-  background: rgba(0, 0, 1, 0.35);
-}
-
-.table-wrap table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 520px;
-}
-
-.table-wrap th,
-.table-wrap td {
-  padding: clamp(1.0rem, 1.2vw, 1.4rem);
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 254, 0.10);
-  white-space: nowrap;
-}
-
-.table-wrap thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: linear-gradient(90deg, rgba(249, 220, 53, 0.92), rgba(254, 152, 0, 0.88));
-  color: #000001;
+.main-home .hero-stat .k {
+  font-family: var(--ff-ui);
   font-weight: 900;
   letter-spacing: 0.2px;
 }
 
-.table-wrap tbody tr:nth-child(odd) {
-  background: rgba(255, 255, 254, 0.04);
+.main-home .hero-stat .v {
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 700;
 }
 
-.table-wrap tbody tr:hover {
-  background: rgba(138, 192, 72, 0.12);
+/* HERO MEDIA wide anche se la gif è 480x480 */
+.main-home .hero-media {
+  margin: 0;
+  border-radius: calc(var(--radius) + 10px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(7, 10, 18, 0.35);
+  box-shadow: var(--shadow-2), var(--glow-pink);
+  position: relative;
+
+  /* box “cinematico” stabile */
+  aspect-ratio: 16 / 10;
+  /* puoi mettere 16/9 se la vuoi più “banner” */
 }
 
-.table-wrap th:first-child,
-.table-wrap td:first-child {
-  width: 56px;
+/* scanlines soft sopra */
+.main-home .hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  background: repeating-linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.10) 0px,
+      rgba(255, 255, 255, 0.10) 1px,
+      transparent 2px,
+      transparent 6px);
+  mix-blend-mode: overlay;
 }
 
-/* ============ Responsive upgrade ============ */
+.main-home .hero-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  /* qui avviene il “wide” */
+  object-fit: cover;
+
+  /* scegli dove croppare: */
+  object-position: center;
+  /* default */
+  /* object-position: center top;  se vuoi tenere più “sopra” */
+}
+
+/* accessibilità: riduci motion -> sostituisci con immagine statica */
+@media (prefers-reduced-motion: reduce) {
+  .main-home .hero-media-frame img {
+    content: url("/images/hero/GoodGameHeroHome.webp");
+    /* crea una cover statica */
+  }
+}
+
+/* =========================================================
+   HOME - HOW IT WORKS / SFIDA
+========================================================= */
+
+.main-home .how-it-works .hiw-header p {
+  max-width: 70ch;
+}
+
+/* 3 card */
+.main-home .hiw-grid {
+  margin-top: var(--sp-3);
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.main-home .hiw-card {
+  position: relative;
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(7, 10, 18, 0.35);
+  overflow: hidden;
+}
+
+.main-home .hiw-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px 200px at 15% 20%, rgba(45, 226, 230, 0.10), transparent 55%);
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.main-home .hiw-title {
+  margin: 0 0 0.6rem;
+  font-size: var(--fs-h3);
+}
+
+.main-home .hiw-text {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+.main-home .hiw-badge {
+  display: inline-flex;
+  margin-top: var(--sp-2);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  font-size: var(--fs-small);
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.main-home .hiw-badge--neutral {
+  color: var(--text);
+}
+
+.main-home .hiw-badge--cyan {
+  color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.main-home .hiw-badge--pink {
+  color: var(--neon-pink);
+  box-shadow: var(--glow-pink);
+}
+
+/* confronto */
+.main-home .hiw-compare {
+  margin-top: var(--sp-3);
+  display: grid;
+  gap: var(--sp-2);
+}
+
+.main-home .hiw-compare__col {
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.main-home .hiw-compare__col--pro {
+  border-color: rgba(45, 226, 230, 0.22);
+  box-shadow: var(--glow-cyan);
+}
+
+.main-home .hiw-compare__title {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--fs-h3);
+}
+
+.main-home .hiw-list {
+  margin: 0;
+  padding-left: 1.8rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+/* CTA */
+.main-home .hiw-actions {
+  margin-top: var(--sp-3);
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+/* footnote */
+.main-home .hiw-footnote {
+  margin-top: var(--sp-2);
+}
+
+/* =========================================================
+   LEADERBOARD PREVIEW
+========================================================= */
+.main-home .leaderboard-preview .table-wrap {
+  margin-top: var(--sp-2);
+}
+
+.main-home .leaderboard-preview>p {
+  margin-top: var(--sp-3);
+}
+
+/* =========================================================
+   Responsive
+========================================================= */
+@media (max-width: 480px) {
+  .main-home .hero-media {
+    aspect-ratio: 4 / 3;
+    /* meno crop su mobile */
+  }
+}
+
 @media (min-width: 768px) {
-  .main-home {
-    padding-top: calc(var(--header-h) + env(safe-area-inset-top) + clamp(2.4rem, 3vw, 3.8rem));
-    padding-left: clamp(2.4rem, 3vw, 3.8rem);
-    padding-right: clamp(2.4rem, 3vw, 3.8rem);
-    padding-bottom: clamp(2.4rem, 3vw, 3.8rem);
+  .main-home>section {
+    padding: var(--sp-4);
+  }
+
+  .main-home .how-it-works ol {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .main-home .hero-actions .btn {
     padding: 1.2rem 2.0rem;
-    /* override leggero, ma resta globale */
   }
 }
 
 @media (min-width: 1024px) {
   .main-home {
     gap: clamp(1.8rem, 2vw, 3rem);
+  }
+}
+
+@media (min-width: 768px) {
+  .main-home .hiw-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .main-home .hiw-compare {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .main-home .hiw-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (min-width: 900px) {
+  .main-home .hero-inner {
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--sp-4);
+  }
+
+  .main-home .hero-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .main-home .hero-stat {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

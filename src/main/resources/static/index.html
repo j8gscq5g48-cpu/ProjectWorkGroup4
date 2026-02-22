@@ -35,6 +35,16 @@
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/home.css">
 
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--  font-family: "Inter", sans-serif; Body: Inter (leggibilità alta, zero fatica) -->
+    <!--  font-family: "Orbitron", sans-serif;  UI / numeri / HUD: Orbitron (per arcade/sci-fi) -->
+    <!-- font-family: "Press Start 2P", system-ui; Headings / logo: Press Start 2P (pixel vibe, ma solo per H1/H2/brand) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+
     <script src="/js/api.js" defer></script>
     <script src="/js/home.js" defer></script>
     <script src="/js/home-leaderboard.js" defer></script>
@@ -47,52 +57,109 @@
         <main class="main-home" id="main-content">
             <!-- HERO -->
             <section class="hero" aria-label="Presentazione ArcadeHub">
-                <header class="hero-header">
-                    <h1>ArcadeHub</h1>
-                    <p>
-                        Un hub di intrattenimento con giochi 2D e quiz: scegli cosa giocare, fai punti e scala la
-                        classifica.
-                    </p>
-                </header>
+                <div class="hero-inner">
+                    <header class="hero-header">
+                        <h1 class="hero-title title-arcade title-neon">ArcadeHub</h1>
+                        <p class="hero-text">
+                            Giochi 2D, XP, livelli e classifiche. Entra, gioca, e fai il record che rovina la giornata a
+                            qualcuno 😄
+                        </p>
 
-                <div class="hero-actions" aria-label="Azioni principali">
-                    <a class="btn btn-primary" href="/play.html">Gioca ora</a>
-                    <a class="btn btn-ghost" href="/auth.html">Accedi / Registrati</a>
+                        <div class="hero-actions" aria-label="Azioni principali">
+                            <a class="btn btn-primary" href="/play.html">Gioca ora</a>
+                            <a class="btn btn-ghost" href="/auth.html">Accedi / Registrati</a>
+                        </div>
+
+                        <ul class="hero-stats" aria-label="Vantaggi principali">
+                            <li class="hero-stat"><span class="k">Guest</span><span class="v">Prova subito</span></li>
+                            <li class="hero-stat"><span class="k">Iscritto</span><span class="v">Salvi progressi</span>
+                            </li>
+                            <li class="hero-stat"><span class="k">Ranking</span><span class="v">Sfida globale</span>
+                            </li>
+                        </ul>
+                    </header>
+
+                    <!-- HERO MEDIA -->
+                    <figure class="hero-media" aria-label="Anteprima ArcadeHub">
+                        <img src="/images/hero/GoodGameHeroHome.gif"
+                            alt="Animazione arcade in stile anni 80 che invita a giocare e competere" loading="lazy"
+                            decoding="async" />
+                    </figure>
                 </div>
-
-
-                <!-- TODO: qui in futuro immagine/hero media -->
             </section>
 
-            <!-- COME FUNZIONA -->
-            <section class="how-it-works" aria-label="Come funziona">
-                <header>
-                    <h2>Come funziona</h2>
-                    <p>In tre step: semplice, veloce, arcade.</p>
+            <!-- COME FUNZIONA / SFIDA -->
+            <section class="how-it-works" aria-label="Come funziona e perché iscriversi">
+                <header class="hiw-header">
+                    <h2>Entra in modalità sfida</h2>
+                    <p>Da guest puoi provare i giochi. Da iscritto inizi a fare sul serio: progressi, livelli e
+                        classifica.</p>
                 </header>
 
-                <ol>
-                    <li>Scegli un gioco o una modalità.</li>
-                    <li>Gioca e accumula punteggio.</li>
-                    <li>Controlla la classifica e migliora il tuo record.</li>
-                </ol>
+                <div class="hiw-grid" role="list">
+                    <article class="hiw-card" role="listitem">
+                        <h3 class="hiw-title">Gioca subito</h3>
+                        <p class="hiw-text">Scegli un gioco e prova al volo. Nessun account richiesto.</p>
+                        <span class="hiw-badge hiw-badge--neutral">Guest</span>
+                    </article>
+
+                    <article class="hiw-card" role="listitem">
+                        <h3 class="hiw-title">Sali di livello</h3>
+                        <p class="hiw-text">Accumulando XP sblocchi avatar e migliori le tue statistiche.</p>
+                        <span class="hiw-badge hiw-badge--cyan">Progressi</span>
+                    </article>
+
+                    <article class="hiw-card" role="listitem">
+                        <h3 class="hiw-title">Scala la classifica</h3>
+                        <p class="hiw-text">Entra nella classifica globale o per gioco. Ogni run è una sfida.</p>
+                        <span class="hiw-badge hiw-badge--pink">Competizione</span>
+                    </article>
+                </div>
+
+                <div class="hiw-compare" aria-label="Guest vs Iscritto">
+                    <div class="hiw-compare__col">
+                        <h3 class="hiw-compare__title">Guest</h3>
+                        <ul class="hiw-list">
+                            <li>✅ Provi tutti i giochi</li>
+                            <li>❌ Progressi non salvati</li>
+                            <li>❌ Niente classifica</li>
+                        </ul>
+                    </div>
+
+                    <div class="hiw-compare__col hiw-compare__col--pro">
+                        <h3 class="hiw-compare__title">Iscritto</h3>
+                        <ul class="hiw-list">
+                            <li>✅ Salvi best score e ultime run</li>
+                            <li>✅ XP e livelli</li>
+                            <li>✅ Classifica globale e per gioco</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="hiw-actions">
+                    <a class="btn btn-primary" href="/auth.html">Crea il tuo account</a>
+                    <a class="btn btn-ghost" href="/play.html">Gioca come guest</a>
+                </div>
+
+                <p class="hiw-footnote muted small">
+                    Anche una sola partita “buona” può farti entrare nella Top 10 😉
+                </p>
             </section>
 
             <!-- TOP 5 (PLACEHOLDER) -->
             <section class="leaderboard-preview" aria-label="Anteprima classifica">
                 <header>
                     <h2>Top 5 di oggi</h2>
-                    <p>Anteprima (dati finti). La classifica reale arriverà dal backend.</p>
                 </header>
 
                 <div class="table-wrap" role="region" aria-label="Tabella classifica Top 5">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col" class="col-rank">#</th>
+                                <th scope="col" class="col-rank">Posizione</th>
                                 <th scope="col" class="col-avatar">Avatar</th>
                                 <th scope="col">Utente</th>
-                                <th scope="col">Punteggio totale</th>
+                                <th scope="col">Punteggio tot</th>
                                 <th scope="col">Livello</th>
                             </tr>
                         </thead>
@@ -112,6 +179,7 @@
         </main>
 
         <div id="site-footer"></div>
+        <div class="modal" id="feedbackModal" aria-hidden="true"> </div>
     </div>
 
     <!-- Accessibilità: helper class da definire poi in CSS -->
@@ -119,6 +187,7 @@
     .sr-only { ... }
   -->
     <script src="/js/partials.js"></script>
+    <script src="/js/feedback.js"></script>
 </body>
 
 </html>

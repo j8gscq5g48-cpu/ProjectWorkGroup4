@@ -35,6 +35,16 @@
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/auth.css" />
 
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--  font-family: "Inter", sans-serif; Body: Inter (leggibilità alta, zero fatica) -->
+    <!--  font-family: "Orbitron", sans-serif;  UI / numeri / HUD: Orbitron (per arcade/sci-fi) -->
+    <!-- font-family: "Press Start 2P", system-ui; Headings / logo: Press Start 2P (pixel vibe, ma solo per H1/H2/brand) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+
     <script src="/js/api.js" defer></script>
     <script src="/js/auth.js" defer></script>
 </head>
@@ -160,7 +170,7 @@
                                 </p>
 
                                 <div class="avatar-grid" role="radiogroup" aria-label="Selezione avatar"></div>
-                                
+
 
                                 <p class="form-error" data-error-for="avatarId" hidden></p>
                             </fieldset>
@@ -191,6 +201,7 @@
       -->
 
         <div id="site-footer"></div>
+        <div class="modal" id="feedbackModal" aria-hidden="true"> </div>
     </div>
 
     <!-- Accessibilità: helper class da definire poi in CSS -->
@@ -198,4 +209,5 @@
     .sr-only { ... }
   -->
     <script src="/js/partials.js"></script>
+    <script src="/js/feedback.js"></script>
 </body>

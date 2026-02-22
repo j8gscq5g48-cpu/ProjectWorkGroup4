@@ -39,6 +39,16 @@
 
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/leaderboard.css">
+
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--  font-family: "Inter", sans-serif; Body: Inter (leggibilità alta, zero fatica) -->
+    <!--  font-family: "Orbitron", sans-serif;  UI / numeri / HUD: Orbitron (per arcade/sci-fi) -->
+    <!-- font-family: "Press Start 2P", system-ui; Headings / logo: Press Start 2P (pixel vibe, ma solo per H1/H2/brand) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -69,6 +79,7 @@
                         <label for="lb-game">Gioco</label>
                         <select id="lb-game" name="game">
                             <option value="flappy" selected>Flappy Bird</option>
+                            <option value="invaders" selected>Invaders</option>
                             <!-- Futuro: aggiungere altri giochi -->
                         </select>
                     </div>
@@ -96,18 +107,18 @@
 
                         <thead>
                             <tr>
-                                <th scope="col" class="col-rank">#</th>
+                                <th scope="col" class="col-rank">Posizione</th>
                                 <th scope="col" class="col-avatar">Avatar</th>
                                 <th scope="col" class="col-username">Username</th>
 
                                 <!-- Colonne GLOBAL -->
-                                <th scope="col" class="col-totalScore" data-col="GLOBAL">Punteggio totale</th>
-                                <th scope="col" class="col-totalPlayed" data-col="GLOBAL">Partite totali</th>
+                                <th scope="col" class="col-totalScore" data-col="GLOBAL">Punteggio tot</th>
+                                <th scope="col" class="col-totalPlayed" data-col="GLOBAL">Partite tot</th>
                                 <th scope="col" class="col-level" data-col="GLOBAL">Livello</th>
 
                                 <!-- Colonne PER GIOCO -->
                                 <th scope="col" class="col-bestScore" data-col="GAME" hidden>Best score</th>
-                                <th scope="col" class="col-gamePlayed" data-col="GAME" hidden>Partite (gioco)</th>
+                                <th scope="col" class="col-gamePlayed" data-col="GAME" hidden>Partite</th>
                                 <th scope="col" class="col-levelGame" data-col="GAME" hidden>Livello</th>
                             </tr>
                         </thead>
@@ -148,6 +159,7 @@
         </main>
 
         <div id="site-footer"></div>
+        <div class="modal" id="feedbackModal" aria-hidden="true"> </div>
     </div>
 
     <!-- Accessibilità: helper class da definire poi in CSS -->
@@ -155,5 +167,6 @@
     .sr-only { ... }
   -->
     <script src="/js/partials.js"></script>
+    <script src="/js/feedback.js"></script>
 
 </body>

@@ -34,6 +34,17 @@
 
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/play.css" />
+
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--  font-family: "Inter", sans-serif; Body: Inter (leggibilità alta, zero fatica) -->
+    <!--  font-family: "Orbitron", sans-serif;  UI / numeri / HUD: Orbitron (per arcade/sci-fi) -->
+    <!-- font-family: "Press Start 2P", system-ui; Headings / logo: Press Start 2P (pixel vibe, ma solo per H1/H2/brand) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
@@ -60,8 +71,7 @@
                     </button>
 
                     <button class="game-card" type="button" data-game="invaders" aria-label="Avvia Invaders">
-                        <!-- /images/invaders-card.webp -->
-                        <img src="" alt="" />
+                        <img src="/images/Invaders/invaders-card.webp" alt="" />
                         <div class="game-card-body">
                             <h2>Invaders</h2>
                             <p>Abbatti gli alieni prima che ti raggiungano.</p>
@@ -70,8 +80,7 @@
 
                     <!-- Placeholder card per futuri giochi -->
                     <button class="game-card" type="button" data-game="soon" disabled aria-label="Gioco in arrivo">
-                        <!-- /images/coming-soon.png -->
-                        <img src="" alt="" />
+                        <img src="/images/coming-soon.webp" alt="" />
                         <div class="game-card-body">
                             <h2>Coming soon</h2>
                             <p>Nuovi giochi in arrivo.</p>
@@ -86,7 +95,7 @@
                     <button class="game-close" id="btnCloseGame" type="button" aria-label="Chiudi gioco">✕</button>
 
                     <div class="game-stage">
-                        <canvas id="canvas"></canvas>
+                        <canvas id="canvas" tabindex="0"></canvas>
                     </div>
                 </div>
             </section>
@@ -122,6 +131,7 @@
         </main>
 
         <div id="site-footer"></div>
+        <div class="modal" id="feedbackModal" aria-hidden="true"> </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"
@@ -133,6 +143,7 @@
     <script src="/js/game/invaders.js"></script>
     <script src="/js/partials.js"></script>
     <script src="/js/play.js"></script>
+    <script src="/js/feedback.js"></script>
 </body>
 
 <!-- 

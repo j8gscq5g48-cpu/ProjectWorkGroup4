@@ -1,14 +1,12 @@
 /* =========================================================
    LEADERBOARD (leaderboard.html) | Mobile First
-   - Card + controlli + tabella scrollabile con header sticky
+   - Card + controlli + tabella scrollabile (usa .table/.table-wrap globali)
 ========================================================= */
 
-/* Wrapper pagina (opzionale) */
 .main-leaderboard {
     padding-bottom: var(--sp-4);
 }
 
-/* Sezione principale */
 .leaderboard {
     background: var(--superficie-1);
     border: 1px solid var(--bordo-1);
@@ -24,7 +22,7 @@
 
 .leaderboard__subtitle {
     margin: 0;
-    color: rgba(255, 255, 254, 0.85);
+    color: var(--text-muted);
     font-size: clamp(1.3rem, 0.4vw + 1.2rem, 1.6rem);
 }
 
@@ -34,12 +32,15 @@
     display: grid;
     gap: var(--sp-2);
     align-items: end;
+
     padding: var(--sp-2);
     border-radius: calc(var(--radius) - 2px);
     background: var(--superficie-1);
     border: 1px solid var(--bordo-1);
 }
 
+/* label: lo stile “label” lo gestiamo con la base globale,
+   ma qui manteniamo compatibilità con le classi attuali */
 .leaderboard__control label {
     display: block;
     margin-bottom: 0.7rem;
@@ -47,42 +48,7 @@
     letter-spacing: 0.01em;
 }
 
-.leaderboard__hint {
-    display: block;
-    margin-top: 0.6rem;
-    font-size: var(--fs-small);
-    color: rgba(255, 255, 254, 0.75);
-}
-
-/* Select coerenti col tema */
-.leaderboard select {
-    width: 100%;
-    padding: 1.1rem 1.2rem;
-    border-radius: 14px;
-    border: 1px solid var(--bordo-1);
-    background: rgba(255, 255, 254, 0.06);
-    color: var(--colore-testo);
-    color-scheme: dark;
-    outline: none;
-
-    /* look moderno cross-browser */
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
-
-.leaderboard select option,
-.leaderboard select optgroup {
-    background-color: var(--colore-sfondo);
-    color: var(--colore-testo);
-}
-
-.leaderboard select:focus-visible {
-    outline: 2px solid rgba(249, 220, 53, 0.85);
-    outline-offset: 3px;
-}
-
-/* Azioni */
+/* Actions */
 .leaderboard__actions {
     display: flex;
     gap: var(--sp-1);
@@ -92,7 +58,7 @@
 
 .leaderboard__updated {
     font-size: var(--fs-small);
-    color: rgba(255, 255, 254, 0.75);
+    color: var(--text-muted);
 }
 
 /* Status (loading / empty / error) */
@@ -100,21 +66,10 @@
     margin-top: var(--sp-2);
     padding: 1.0rem 1.2rem;
     border-radius: 12px;
-    border: 1px dashed rgba(255, 255, 254, 0.18);
-    background: rgba(0, 0, 1, 0.35);
-    color: rgba(255, 255, 254, 0.88);
+    border: 1px dashed rgba(255, 255, 255, 0.18);
+    background: rgba(7, 10, 18, 0.35);
+    color: rgba(255, 255, 255, 0.88);
     font-size: var(--fs-small);
-}
-
-/* Avatar */
-.avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 254, 0.22);
-    background: rgba(255, 255, 254, 0.06);
-    object-fit: cover;
-    display: inline-block;
 }
 
 /* Username più “solido” */
@@ -122,15 +77,9 @@
     font-weight: 800;
 }
 
-/* Hidden columns (JS toggla hidden) */
-[hidden] {
-    display: none !important;
-}
-
-/* Accessibilità: focus dentro regione scroll */
-.leaderboard__table-wrap:focus-visible {
-    outline: 3px solid rgba(249, 220, 53, 0.75);
-    outline-offset: 4px;
+/* wrapper tabella: usa .table-wrap globale, qui solo naming pagina */
+.leaderboard__table-wrap {
+    margin-top: var(--sp-2);
 }
 
 /* ============ Media query ============ */
@@ -150,7 +99,6 @@
 
     .leaderboard__table {
         min-width: 0;
-        /* su tablet spesso non serve scroll orizzontale */
     }
 }
 

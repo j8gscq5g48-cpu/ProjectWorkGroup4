@@ -160,19 +160,19 @@
   const WAVES = [
     {
       id: 1,
-      enemiesToKill: 1000,
+      enemiesToKill: 500,
       mix: { base: 0.92, medio: 0.08, forte: 0.0 },
       boss: { hp: 50, sprite: "boss1" },
     },
     {
       id: 2,
-      enemiesToKill: 1000,
+      enemiesToKill: 500,
       mix: { base: 0.6, medio: 0.4, forte: 0.0 },
       boss: { hp: 100, sprite: "boss2" },
     },
     {
       id: 3,
-      enemiesToKill: 1000,
+      enemiesToKill: 500,
       mix: { base: 0.55, medio: 0.35, forte: 0.10 },
       boss: { hp: 150, sprite: "boss3" },
     },
@@ -254,8 +254,8 @@
     const fn = window.submitScore;
     if (typeof fn !== "function") return;
     try {
-      if (fn.length >= 2) fn("invaders", score);
-      else fn(score);
+      if (fn.length >= 2) fn("invaders", score/50);
+      else fn(score/50);
     } catch { }
   }
 
@@ -381,7 +381,7 @@
       w: Math.round(U * 5.2),
       h: Math.round(U * 2.9),
       vx: 2.2 * SCALE,
-      shootCd: 0.6,
+      shootCd: 1.0,
       img,
     };
   }
@@ -399,7 +399,7 @@
     const cy = boss.y;
     const s = bossBulletSpeed();
 
-    const spread = [-0.8, 0, 0.8];
+    const spread = [-1.0, 0, 1.0];
     spread.forEach((vxMul) => {
       enemyBullets.push({
         x: cx - Math.round(U * 0.175),

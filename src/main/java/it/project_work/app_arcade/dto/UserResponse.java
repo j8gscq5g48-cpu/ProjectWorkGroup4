@@ -1,6 +1,7 @@
 package it.project_work.app_arcade.dto;
 
 import it.project_work.app_arcade.models.User;
+import it.project_work.app_arcade.utilities.Leveling;
 
 public record UserResponse(
         Long id,
@@ -9,18 +10,31 @@ public record UserResponse(
         User.Role role,
         int level,
         boolean enabled,
-        Long avatarId
+        Long avatarId,
+        long xpTotal,
+        int xpIntoLevel,
+        int xpToNext
         ) {
 
-    public static UserResponse fromEntity(it.project_work.app_arcade.models.User u) {
+    private static int safeInt(long v) {
+        return (v > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) v;
+    }
+
+    public static UserResponse fromEntity(User u) {
+        long xpTotal = u.getXpTotal(); // primitive long => mai null
+        var info = Leveling.fromTotalXp(xpTotal);
+
         return new UserResponse(
                 u.getId(),
                 u.getUsername(),
                 u.getEmail(),
                 u.getRole(),
-                u.getLevel() != null ? u.getLevel() : 1,
+                info.level(),
                 u.isEnabled(),
-                u.getSelectedAvatar() != null ? u.getSelectedAvatar().getId() : null
+                u.getSelectedAvatar() != null ? u.getSelectedAvatar().getId() : 1L,
+                xpTotal,
+                safeInt(info.xpIntoLevel()),
+                safeInt(info.xpToNext())
         );
     }
 }

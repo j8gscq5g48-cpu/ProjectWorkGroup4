@@ -22,10 +22,9 @@ Piattaforma web full‑stack con giochi in stile arcade fruibili via browser. Sv
 - Invio feedback.
 
 ## Feature opzionali
-- Sviluppo Tetris.
-- Ruolo ADMIN con viste/moderazione.
-- Statistiche avanzate per gioco.
-- Social/login esterni.
+- Aggiungere un frame splash screen con nome (ArcadeHub) e suono.
+- Aggiungere tasto 'torna su'.
+- Sviluppo terzo minigioco Tetris.
 
 ## Flusso principale (happy path utente)
 1. L'utente apre la Home clicca su Gioca, sceglie un gioco e prova.

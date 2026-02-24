@@ -27,12 +27,13 @@ Opzionale per sviluppo:
 
 
 ## Avvio
-- Avvio rapido (Maven)
-  - `mvn spring-boot:run`
 - Avvio dal JAR
-  - Dopo il package: `java -jar target/app-arcade-*.jar`
-- URL applicazione
-  - Frontend/Backend: http://localhost:8080
+  1. Installare MySQL ed eseguire una query: 
+  2. Spostare in cartella dove è stato scaricato il file JAR, aprire il terminare ed eseguire il comando:
+     
+    - windows: `java -jar arcadehub.jar ^ --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub ^ --spring.datasource.username=root ^ --spring.datasource.password=root`
+    - Mac/Linux: `java -jar arcadehub.jar --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub --spring.datasource.username=root --spring.datasource.password=root`
+  3. Usare un browser moderno(Chrome o Edge) e aprire il link: http://localhost:8080
 
 La webapp espone pagine statiche sotto `src/main/resources/static` e API REST gestite dai controller Spring (pacchetto `controllers`). La sicurezza è configurata nel pacchetto `security`.
 

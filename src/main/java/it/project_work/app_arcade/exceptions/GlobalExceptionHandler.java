@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import it.project_work.app_arcade.dto.ApiError;
+import it.project_work.app_arcade.authentication.dto.ApiError;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

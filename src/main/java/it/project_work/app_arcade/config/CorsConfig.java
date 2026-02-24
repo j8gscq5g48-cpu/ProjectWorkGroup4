@@ -1,4 +1,4 @@
-package it.project_work.app_arcade.security;
+package it.project_work.app_arcade.config;
 
 import java.util.List;
 

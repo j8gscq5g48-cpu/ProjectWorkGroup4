@@ -1,55 +1,38 @@
 # ProjectWorkGroup4
-ArcadeHub App 
-
+## ArcadeHub App 
 Piattaforma web full‑stack con giochi in stile arcade fruibili via browser. Sviluppata in Java Spring Boot, con frontend statico (HTML/CSS/JS), che offre attualmente 2 minigiochi: Flappy Bird e Invaders. I guest possono giocare senza login, ma con l’autenticazione è possibile creare il profilo che salva gli aggiornamenti. Con la creazione del profilo utente è , inoltre, possibile scegliere un avatar base. Gli altri avatar sono sbloccabili in base ai punti guadagnati e al livello raggiunto dall'utente. In più ci sono i progressi utente, la classifica globale che somma il totale dei 'best score' per ogni gioco oppure le classsifiche che mostrano il migliore utente per il singolo gioco. Infine, è facoltativa la possibilità per l'utente di segnalare possibili bug di sistema o feedback generali.
+
 
 ## Requisiti
 - Java 17+
 - Maven 3.8+
 - Browser moderno (Chrome/Edge/Firefox)
 - Porta TCP libera: 8080 (configurabile)
+- MySQL Workbench + DMS
 
 Opzionale per sviluppo:
 - IDE (IntelliJ IDEA / Eclipse / VS Code + estensioni Java)
 
 
-## Setup
-1. Clona il repository
-   - HTTPS: `git clone <repo-url>`
-   - SSH: `git clone git@github.com:<org>/<repo>.git`
-2. Entra nella cartella del progetto
-   - `cd ProjectWorkGroup4`
-3. Verifica Java e Maven
-   - `java -version` deve mostrare 17+
-   - `mvn -v` deve mostrare Maven installato
-4. Compila e scarica le dipendenze
-   - `mvn clean package -DskipTests`
-
-
-## Avvio
-- Avvio dal JAR
-  1. Installare MySQL ed eseguire una query: 
-  2. Spostare in cartella dove è stato scaricato il file JAR, aprire il terminare ed eseguire il comando:
-     
+## Setup e Avvio
+  1. Scaricare il file JAR e il file `arcadehub.sql`.
+  2. Aprire MySQL workbranch, eseguire le query nel file `arcadehub.sql` per la creazione del database e delle tabelle.
+  3. Spostare in cartella dove è stato scaricato il file JAR, aprire il terminare ed eseguire il comando:
     - windows: `java -jar arcadehub.jar ^ --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub ^ --spring.datasource.username=root ^ --spring.datasource.password=root`
-    - Mac/Linux: `java -jar arcadehub.jar --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub --spring.datasource.username=root --spring.datasource.password=root`
-  3. Usare un browser moderno(Chrome o Edge) e aprire il link: http://localhost:8080
+    - Mac/Linux: `java -jar arcadehub.jar --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub --spring.datasource.username=root`
 
-La webapp espone pagine statiche sotto `src/main/resources/static` e API REST gestite dai controller Spring (pacchetto `controllers`). La sicurezza è configurata nel pacchetto `security`.
+    Nota: I dati necessari nel database vengono inizializzati automaticamente all'avvio di Spring.
+  4. Usare un browser moderno(Chrome o Edge) e aprire il link: http://localhost:8080
 
 
 ## Credenziali demo
-Se non è presente un seed automatico, crea un utente di test dalla pagina di registrazione.
-
-Esempio credenziali per ambienti demo:
-- Username: demo
-- Email: demo@example.com
-- Password: DemoPass!123
-
-Nota: se l’ambiente contiene già utenti, puoi anche usare un account esistente ed eventualmente cambiare password dalla pagina profilo.
+È presente l'account di un user demo.
+- Username: example
+- Email: example@example.com
+- Password: example
 
 
-## Comandi utili
+## Comandi utili per sviluppatori
 - Build (con test): `mvn clean verify`
 - Build (senza test): `mvn clean package -DskipTests`
 - Avvio locale: `mvn spring-boot:run`

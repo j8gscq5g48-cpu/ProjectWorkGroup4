@@ -7,29 +7,36 @@ Piattaforma web full‑stack con giochi in stile arcade fruibili via browser. Sv
 - Maven 3.8+
 - Browser moderno (Chrome/Edge/Firefox)
 - Porta TCP libera: 8080 (configurabile)
-- MySQL Workbench + DMS
+- MySQL Server (o un DBMS MySQL compatibile) + MySQL Workbench
 
 Opzionale per sviluppo:
 - IDE (IntelliJ IDEA / Eclipse / VS Code + estensioni Java)
 
 
 ## Setup e Avvio
-  1. Scaricare il file JAR e il file `arcadehub.sql`.
-  2. Aprire MySQL workbranch, eseguire le query nel file `arcadehub.sql` per la creazione del database e delle tabelle.
+  1. Scaricare il file JAR e la cartella configuration che contiene il file `arcadehub.sql`.
+  2. Aprire MySQL Workbranch, aprire `arcadehub.sql` in MySQL Workbranch, eseguire le query del `arcadehub.sql` per la creazione del database e delle tabelle.
   3. Spostare in cartella dove è stato scaricato il file JAR, aprire il terminare ed eseguire il comando:
     - windows: `java -jar arcadehub.jar ^ --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub ^ --spring.datasource.username=root ^ --spring.datasource.password=root`
-    - Mac/Linux: `java -jar arcadehub.jar --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub --spring.datasource.username=root`
+    - Mac/Linux: `java -jar arcadehub.jar --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub --spring.datasource.username=root --spring.datasource.password=root`
 
-    Nota: I dati necessari nel database vengono inizializzati automaticamente all'avvio di Spring.
+    Nota:
+    - Le proprietà `spring.datasource.username` e `spring.datasource.password` devono essere impostate con il nome utente e la password per accedere al server MySQL, cioè le credenziali definite durante l'installazione o create in seguito per l'applicazione..
+    - I dati necessari nel database vengono inizializzati automaticamente all'avvio di Spring.
   4. Usare un browser moderno(Chrome o Edge) e aprire il link: http://localhost:8080
 
 
 ## Credenziali demo
-È presente l'account di un user demo.
+Sono presente due account demo.
 - Username: example
 - Email: example@example.com
 - Password: example
+- Ruolo: USER
 
+- Username: admin
+- Email: admin@admin.com
+- Password: adminadmin
+- Ruolo: ADMIN
 
 ## Comandi utili per sviluppatori
 - Build (con test): `mvn clean verify`

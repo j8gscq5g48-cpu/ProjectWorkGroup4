@@ -2,7 +2,6 @@
 ## ArcadeHub App 
 Piattaforma web full‑stack con giochi in stile arcade fruibili via browser. Sviluppata in Java Spring Boot, con frontend statico (HTML/CSS/JS), che offre attualmente 2 minigiochi: Flappy Bird e Invaders. I guest possono giocare senza login, ma con l’autenticazione è possibile creare il profilo che salva gli aggiornamenti. Con la creazione del profilo utente è , inoltre, possibile scegliere un avatar base. Gli altri avatar sono sbloccabili in base ai punti guadagnati e al livello raggiunto dall'utente. In più ci sono i progressi utente, la classifica globale che somma il totale dei 'best score' per ogni gioco oppure le classsifiche che mostrano il migliore utente per il singolo gioco. Infine, è facoltativa la possibilità per l'utente di segnalare possibili bug di sistema o feedback generali.
 
-
 ## Requisiti
 - Java 17+
 - Maven 3.8+
@@ -45,33 +44,37 @@ Windows (script Maven wrapper inclusi):
 
 
 ## Struttura del progetto
-```
 ProjectWorkGroup4/
-├─ pom.xml                       # Dipendenze e build
-├─ src/
-│  ├─ main/
-│  │  ├─ java/it/project_work/app_arcade/
-│  │  │  ├─ AppArcadeApplication.java  # Entry point Spring Boot
-│  │  │  ├─ controllers/               # Controller REST & pagine
-│  │  │  ├─ dto/                       # DTO request/response
-│  │  │  ├─ exceptions/                # Eccezioni & handler globali
-│  │  │  ├─ models/                    # Entity/JPA models
-│  │  │  ├─ repositories/              # Spring Data JPA repository
-│  │  │  ├─ security/                  # Config sicurezza & CORS
-│  │  │  ├─ services/                  # Business logic
-│  │  │  └─ utilities/                 # Helper di dominio
-│  │  └─ resources/
-│  │     ├─ static/                    # Frontend statico
-│  │     │  ├─ css/                    # Stili
-│  │     │  ├─ js/                     # Script (api, auth, game, ecc.)
-│  │     │  ├─ images/, audio/, assets/avatars/
-│  │     │  └─ *.html                  # Pagine: index, auth, play, profile, leaderboard
-│  │     └─ application.properties|yml # Config (se presente)
-│  └─ test/java/...                    # Test JUnit/Spring
-├─ README.md
-├─ LICENSE
-└─ .gitignore / .gitattributes
-```
+├── pom.xml                        # Dipendenze e build Maven
+├── mvnw, mvnw.cmd                 # Maven Wrapper
+├── src/
+│   ├── main/
+│   │   ├── java/it/project_work/app_arcade/
+│   │   │   ├── AppArcadeApplication.java   # Entry point Spring Boot
+│   │   │   ├── authentication/             # Feature: Auth (Controller, DTO, Service)
+│   │   │   ├── profile/                    # Feature: Profilo & Leaderboard
+│   │   │   ├── submitprogress/             # Feature: Salvataggio punteggi
+│   │   │   ├── feedback/                   # Feature: Feedback utente
+│   │   │   ├── models/                     # Entity JPA (User, Avatar, ecc.)
+│   │   │   ├── repositories/               # interfacce Spring Data JPA
+│   │   │   ├── config/                     # Security, CORS, Database Seeding
+│   │   │   ├── exceptions/                 # Exception Handler e classi Custom
+│   │   │   └── genericservice/             # Astrazioni e servizi generici
+│   │   └── resources/
+│   │       ├── db/                         # Script SQL (seed.sql)
+│   │       ├── static/                     # Frontend statico
+│   │       │   ├── css/                    # Stili (auth, home, play, ecc.)
+│   │       │   ├── js/                     # Logica (game, api, auth, guard)
+│   │       │   ├── images/                 # Sprite, sfondi e asset grafici
+│   │       │   ├── audio/                  # Effetti sonori giochi
+│   │       │   ├── assets/                 # Avatars e video intro
+│   │       │   ├── partials/               # Frammenti HTML (header/footer)
+│   │       │   └── *.html                  # Pagine: index, auth, play, profile...
+│   │       └── application.properties|yml  # Configurazione di sistema
+│   └── test/java/...                      # Test JUnit e Spring Boot
+├── docs/                                  # Documentazione tecnica e flussi
+├── README.md                              # Documentazione principale
+└── .gitignore / .gitattributes            # Configurazione Git
 
 Dettagli frontend
 - Giochi: `static/js/game/flappy.js`, `static/js/game/invaders.js`
@@ -89,33 +92,32 @@ Backend principali
 ## Configurazione
 - Porta server: modificabile con `server.port=8080` in `application.properties`
 - CORS/sicurezza: vedi `security/SecurityConfig.java` e `security/CorsConfig.java`
-- Database: se non specificato nel `pom.xml`/`application.properties`, Spring Boot utilizza H2/in‑memory o la configurazione di default del progetto. Imposta le proprietà JPA/datasource secondo necessità.
+- Database: specificato nell'`application properties`
 
 Esempio (application.properties):
-```
+spring.datasource.username=root
+spring.datasource.password=root
 server.port=8080
-spring.datasource.url=jdbc:h2:mem:arcade;DB_CLOSE_DELAY=-1
-spring.datasource.driverClassName=org.h2.Driver
-spring.jpa.hibernate.ddl-auto=update
-spring.h2.console.enabled=true
-```
+spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.jpa.hibernate.ddl-auto=validate
 
 
-## API principali (overview)
-- Autenticazione: login, register, me, change password/username
+## API principali
+- Autenticazione: login, register, profilo, change password/username
 - Progressi: submit score, get progress by game
 - Classifica: top/leaderboard per gioco
 - Avatar: elenco e selezione
 - Feedback: invio feedback
 
-Gli endpoint sono definiti nei rispettivi controller sotto `controllers/`. Per il consumo lato client, vedere `static/js/api.js`.
+Gli endpoint sono definiti nei rispettivi controller, per il consumo lato client, vedere `static/js/api.js`.
 
 
 ## Flusso utente
-1. Registrazione o login
-2. Selezione avatar e modifica profilo
-3. Avvio gioco da `Play` (Flappy o Invaders)
-4. Salvataggio punteggio e visualizzazione classifica
+1. Utente entra come guest, con la possibilità di giocare, ma non salvare i dati.
+2. Registrazione o login
+3. Selezione avatar e modifica profilo
+4. Avvio gioco da `Gioca` (Flappy o Invaders)
+5. Salvataggio punteggio e visualizzazione classifica
 
 
 ## Troubleshooting

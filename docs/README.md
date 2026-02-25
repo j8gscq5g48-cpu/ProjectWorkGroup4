@@ -16,11 +16,11 @@ Opzionale per sviluppo:
 ## Setup e Avvio
   1. Scaricare il file JAR e la cartella configuration che contiene il file `arcadehub.sql`.
   2. Aprire MySQL Workbench, aprire `arcadehub.sql` in MySQL Workbench, eseguire le query del `arcadehub.sql` per la creazione del database e delle tabelle.
-  3. Spostare in cartella dove è stato scaricato il file JAR, aprire il terminale da quella cartella ed eseguire il comando:
+  3. Spostare in cartella dove è stato scaricato il file JAR, aprire il terminale da quella cartella ed eseguire il comando*:
     - windows: `java -jar arcadehub.jar ^ --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub ^ --spring.datasource.username=root ^ --spring.datasource.password=root`
     - Mac/Linux: `java -jar arcadehub.jar --spring.datasource.url=jdbc:mysql://localhost:3306/arcadehub --spring.datasource.username=root --spring.datasource.password=root`
 
-    Nota:
+    *Nota:
     - Le proprietà `spring.datasource.username` e `spring.datasource.password` devono essere impostate con il nome utente e la password per accedere al server MySQL, cioè le credenziali definite durante l'installazione o create in seguito per l'applicazione..
     - I dati necessari nel database vengono inizializzati automaticamente all'avvio di Spring.
   4. Usare un browser moderno(Chrome o Edge) e aprire il link: http://localhost:8080

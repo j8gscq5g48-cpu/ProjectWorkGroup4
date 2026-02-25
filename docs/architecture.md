@@ -9,16 +9,6 @@ Obiettivo: descrivere le scelte architetturali e la separazione a livelli.
 - Security/Config → configurazione Spring Security, CORS e bean di sicurezza.
 - View statiche → pagine e asset sotto `src/main/resources/static`.
 
-## Diagramma (package-level)
-```mermaid flowchart TD
-  A[Controllers] --> B[Services]
-  B --> C[Repositories]
-  C --> D[(DB)]
-  B --> E[Utilities]
-  A -.-> F[Security/Config]
-  G[Static Frontend]
-```
-
 ## Motivazioni
 
 - Separazione delle responsabilità, testabilità e riuso.

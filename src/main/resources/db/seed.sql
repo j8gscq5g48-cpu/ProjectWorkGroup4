@@ -53,6 +53,10 @@ INSERT INTO users (id, username, password_hash, email, level, selected_avatar_id
 SELECT 1, 'example', '$2a$12$sdTd6xKJilS3.IlTRhXJvuTkWrtHbm2/yFiSNLYZ99DrauyUZR8A6', 'example@example.com', 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE id = 1);
 
+INSERT INTO users (id, username, password_hash, email, level, selected_avatar_id, role)
+SELECT 2, 'admin', '$2a$12$v30VSd97c8YbiT8ivqsyaO0q3t4IcBaulolwH2RfSue9HNCfR3KGm', 'admin@admin.com', 10, 11, 'ADMIN'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE id = 2);
+
 -- Esempi per progressi di gioco
 -- INSERT INTO user_game_progress (id, user_id, game, score, created_at)
 -- SELECT 1, 1, 'flappy', 100, CURRENT_TIMESTAMP

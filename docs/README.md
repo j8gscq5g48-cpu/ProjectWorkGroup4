@@ -46,8 +46,8 @@ Sono presente due account demo.
 - Formattazione/analisi (se configurati plugin nel pom): `mvn fmt:format` / `mvn spotbugs:check`
 
 Windows (script Maven wrapper inclusi):
-- `mvnw.cmd clean package -DskipTests`
-- `mvnw.cmd spring-boot:run`
+- `.\mvnw.cmd clean package -DskipTests`
+- `.\mvnw.cmd spring-boot:run`
 
 
 ## Struttura del progetto

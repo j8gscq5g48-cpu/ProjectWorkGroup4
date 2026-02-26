@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>it.project-work</groupId>
 	<artifactId>app-arcade</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>arcadehub</version>
 	<name>app-arcade</name>
 	<description>App di intrattenimento creata in project work</description>
 	<url/>

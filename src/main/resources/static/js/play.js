@@ -61,19 +61,19 @@ function openOverlay(gameId) {
     rememberFocus();
     currentGame = gameId;
 
+    // refresh vvh PRIMA di mostrare l’overlay
+    const h = window.visualViewport?.height ?? window.innerHeight;
+    document.documentElement.style.setProperty("--vvh", `${h * 0.01}px`);
+
     document.body.classList.remove("game--flappy", "game--invaders");
     document.body.classList.add(`game--${gameId}`);
     document.body.classList.add("is-game-open");
 
-    overlay.classList.add("is-open");
     overlay.setAttribute("aria-hidden", "false");
 
-    const canvas = document.getElementById("canvas");
-    canvas?.focus?.();
+    document.getElementById("canvas")?.focus?.();
 
-    // Avvia gioco scelto (generic)
-    const api = getGameApi(gameId);
-    api?.start?.();
+    getGameApi(gameId)?.start?.();
 }
 
 function closeOverlay() {
@@ -292,6 +292,20 @@ function enforceOrientationWhilePlaying() {
 
         apply();
     }
+
+    function setVvh() {
+        const vv = window.visualViewport;
+        const h = vv?.height ?? window.innerHeight;
+        const top = vv?.offsetTop ?? 0;
+
+        document.documentElement.style.setProperty("--vvh", `${h * 0.01}px`);
+        document.documentElement.style.setProperty("--vv-top", `${top}px`);
+    }
+
+    setVvh();
+    window.addEventListener("resize", setVvh);
+    window.addEventListener("orientationchange", setVvh);
+    window.visualViewport?.addEventListener("resize", setVvh);
 
     document.addEventListener("DOMContentLoaded", setupGameSearchAndFilters);
 })();
